@@ -1,11 +1,22 @@
 import React from 'react';
+import Navbar from './components/navbar/Navbar';
+import Hero from './components/herosection/Hero';
+import Infinite from './components/infinitescroller/Infinite';
+import Features from './components/features/Features';
+import Testimonial from './components/testimonial/Testimonial';
+import Footer from './components/footer/Footer';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <h1>workspace</h1>
-    </div>
-  );
+    <React.StrictMode>
+      <Navbar />
+
+      <div className='hero'>
+        <Hero />
+      </div>
+    </React.StrictMode>
+  )
 }
 
 export default App;

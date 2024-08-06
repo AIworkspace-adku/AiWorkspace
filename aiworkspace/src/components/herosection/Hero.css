@@ -1,0 +1,26 @@
+.hero-container {
+    height: 100vh;
+    background: linear-gradient(312deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 45%, rgba(75,101,215,1) 100%);
+    width: 100;
+  }
+  
+  .split {
+    display: flex;
+    height: 100%;
+  }
+  
+  .land-left {
+    padding: 20px;
+    color: white; /* Ensure the text is visible on the black background */
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    transform: translate(50px, 450px);
+    font-size:30px;
+  }
+  
+  .land-right {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
