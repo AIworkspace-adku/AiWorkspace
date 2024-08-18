@@ -1,0 +1,122 @@
+.features {
+    background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 3, 1) 85%, rgba(75, 101, 215, 1) 100%);
+    padding: 70px 0px;
+    position: relative;
+}
+
+.features__heading-container {
+    margin-bottom: 88px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h2.features_heading {
+    padding-top: 90px;
+    color: #e7e7e7;
+    margin-bottom: 14px;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.h2.features_text-gradient {
+    background: linear-gradient(25deg, rgba(1, 115, 115, 1) 0%, rgba(170, 217, 209, 1) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1.8px;
+    font-weight: 800;
+}
+
+.features__subheading {
+    max-width: 680px;
+    color: #e7e7e7;
+    text-align: center; /* Ensures text inside is centered */
+    margin: 0 auto; /* Center the subheading block within the container */
+    font-size: 20px;
+    padding-bottom: 50px;
+
+}
+
+.features__feature-container {
+    display: grid;
+    grid-template-areas:
+        "tl tl tr tr"
+        "bl blm brm br";
+    grid-template-columns: repeat(4, 271px);
+    place-content: center;
+    gap: 30px 40px;
+}
+
+.feature {
+    padding: 32px 32px 35px 32px;
+    border: 1px solid #4b65d7;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+    background-color: rgba(0, 105, 96, 0.199); 
+}
+
+.feature:hover {
+    background-color: #4b65d7; 
+    transform: translateY(-5px); 
+}
+
+.feature.tl {
+    grid-area: tl;
+}
+
+.feature.tr {
+    grid-area: tr;
+}
+
+.feature.bl {
+    grid-area: bl;
+}
+
+.feature.blm {
+    grid-area: blm;
+}
+
+.feature.brm {
+    grid-area: brm;
+}
+
+.feature.br {
+    grid-area: br;
+}
+
+.feature__icon {
+    height: 32px;
+    width: 32px;
+    margin-bottom: 24px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 4px;
+    border: 1px solid #048c80;
+}
+
+.text-large.feature__heading {
+    color: #e7e7e7;
+    margin-bottom: 30px;
+    font-size: 30px;
+}
+
+.feature__description {
+    color: #efece6;
+    font-size: medium;
+}
+
+.h2 {
+    font-family: "DM Sans";
+    font-size: 48px;
+    line-height: 120%;
+    letter-spacing: -3px;
+    margin: 0px;
+}
+
+.features__subheading {
+    font-size:20px;
+}
+.features_heading-container {
+    text-align: center;
+}
+

@@ -1,6 +1,6 @@
 .hero-container {
     height: 100vh;
-    background: linear-gradient(312deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 45%, rgba(75,101,215,1) 100%);
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 45%, #4b65d7 100%);
     width: 100;
   }
   

@@ -1,0 +1,46 @@
+.logos {
+    background-color: #4b65d7;
+    overflow: hidden;
+    padding: 33px 0px;
+    position: relative;
+}
+
+.logo_slide {
+    white-space: nowrap;
+    max-width: calc(100% - 200px); /* Adjust this if needed based on new overlay width */
+    text-align: center;
+    margin: auto;
+    animation: 35s rotate infinite linear;
+}
+
+.logo {
+    margin: 0px 40px;
+}
+
+.logos_overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 300px; /* Increase the width for a wider fade effect */
+    z-index: 1;
+    pointer-events: none; /* Prevent blocking interactions with the logos */
+}
+
+.logos_overlay_left {
+    left: 0;
+    background: linear-gradient(to left, rgba(75,101,215,0), rgba(75,101,215,1)); /* gradient from transparent to blue */
+}
+
+.logos_overlay_right {
+    right: 0;
+    background: linear-gradient(to right, rgba(75,101,215,0), rgba(75,101,215,1)); /* gradient from transparent to blue */
+}
+
+@keyframes rotate {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}

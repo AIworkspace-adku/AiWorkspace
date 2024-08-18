@@ -15,6 +15,11 @@ function App() {
       <div className='hero'>
         <Hero />
       </div>
+      <Infinite />
+
+
+      <Features />
+
     </React.StrictMode>
   )
 }
