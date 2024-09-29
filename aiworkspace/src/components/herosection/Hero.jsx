@@ -10,18 +10,14 @@ const Hero = () => {
                 <div className="land-left">
                     <h1>Workspace like No other</h1><br></br>
                     <button class="button">
-                        Signup
+                        <a href='/signin'>Signin</a>
 
                     </button>
 
 
                 </div>
                 <div className="land-right">
-                    <Spline
-                        scene="https://prod.spline.design/ovoLpMM5FYMjDtjF/scene.splinecode"
-                        width={800}
-                        height={800}
-                    />
+                
                 </div>
             </Split>
         </div>
