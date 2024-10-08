@@ -23,7 +23,8 @@ const Signin = () => {
         password,
       });
 
-      if (response.data.token) {
+      if (response.data) {
+        console.log("Hi there");
         localStorage.setItem('authToken', response.data.token);
         setErrorMessage('');
         alert('Login successful!');
