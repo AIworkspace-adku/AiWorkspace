@@ -1,0 +1,29 @@
+/* styles.css */
+
+/* Make the editor larger */
+.custom-editor {
+    width: 90%; /* Wider for better visibility */
+    height: calc(100vh - 80px); /* Full height minus padding, adjust as needed */
+    margin: 20px auto; /* Center with margin */
+    font-size: 18px; /* Increase the font size */
+  }
+  
+  /* Change the text color in the editor */
+  .bn-inline-content {
+    color: blue; /* Change text color to blue */
+  }
+  
+  /* Change the color of hovered Slash Menu items */
+  .bn-suggestion-menu {
+    background-color: rgba(0, 0, 255, 0.1); /* Light blue background for menu */
+  }
+  
+  .bn-suggestion-menu .bn-suggestion-item:hover {
+    background-color: rgba(0, 0, 255, 0.2); /* Darker blue when hovering */
+  }
+  
+  /* Add any additional styling you want for the toolbar */
+  .bn-toolbar {
+    background-color: rgba(0, 0, 255, 0.1); /* Light blue for toolbar */
+  }
+  

@@ -17,9 +17,7 @@ const Hero = () => {
 
                 </div>
                 <div className="land-right">
-                    <Spline
-                        scene="https://prod.spline.design/YirO5-RgSudF04ca/scene.splinecode"
-                    />
+                    
                 </div>
             </Split>
         </div>
