@@ -1,4 +1,4 @@
-# AiWorkspacr
+# AiWorkspace
 
 To execute webRTC part:
 1. install all the dependencies
