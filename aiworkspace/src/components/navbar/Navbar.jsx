@@ -18,8 +18,8 @@ const Navbar = () => {
           <ul className="navlinks">
             <li><a href="#">Home</a></li>
             <li><a href="#">Features</a></li>
-            <li><a href="/docs">Testimonial</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="/docs">editor</a></li>
+            <li><a href="/whiteboard">whiteboard</a></li>
           </ul>
         </div>
         <span className={`navTrigger ${menuActive ? 'active' : ''}`} onClick={toggleMenu}>
