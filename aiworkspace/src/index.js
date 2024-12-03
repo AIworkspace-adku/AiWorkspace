@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Signin from './signup/signin/Signin';
 import Register from './signup/register/Register';
-import Docs from './documentation/Docs'
+import Docs from './App_docs'
 import White from './whiteboard/White';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

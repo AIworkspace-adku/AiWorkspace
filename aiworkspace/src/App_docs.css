@@ -1,0 +1,91 @@
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.welcome-button {
+  margin-top: 20px;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #f3f3f3;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  background-color: #e0e0e0;
+  padding: 5px;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-direction: column;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-state-button {
+  margin-top: 20px;
+}
+
+.new-page {
+  page-break-after: always;
+}
+
+.quill .ql-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 48px); /* Adjust based on your top toolbar height */
+}
+
+#toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  border: none;
+  background-color: #f1f1f1;
+  padding: 8px;
+}
+
+.ql-formats {
+  margin-right: 15px;
+}
+
+.quill {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ql-container.ql-snow {
+  border: none;
+  flex-grow: 1;
+}
+
+.ql-editor {
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
