@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Signin = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -14,18 +14,20 @@ const Signin = () => {
     e.preventDefault(); // Prevent default form submission
 
     console.log('Form submitted'); // Debugging log
-    console.log('Username:', username); // Log username
+    console.log('Username:', email); // Log username
     console.log('Password:', password); // Log password
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
-        username,
+        email,
         password,
-      });
+      },
+    {
+      withCredentials: true
+    });
 
       if (response.data) {
         console.log("Hi there");
-        localStorage.setItem('authToken', response.data.token);
         setErrorMessage('');
         alert('Login successful!');
         navigate('/'); // Navigate to the home page
@@ -42,13 +44,13 @@ const Signin = () => {
         <h2 className="title">Login</h2>
         <form className="form" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Email</label>
             <input
               type="text"
-              name="username"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

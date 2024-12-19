@@ -29,7 +29,7 @@ const Register = () => {
 
       if (response.data) {
         alert('Registration successful! You can now log in.');
-        navigate('/login'); // Updated from history.push to navigate
+        navigate('/signin'); // Updated from history.push to navigate
       }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Something went wrong, try again.');

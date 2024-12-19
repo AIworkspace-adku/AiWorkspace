@@ -1,87 +1,124 @@
-// src/components/EditorComponent.js
-
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
+import { io } from 'socket.io-client';
 import EditorToolbar from './EditorToolbar';
-import io from 'socket.io-client';
 import 'react-quill/dist/quill.snow.css';
+import './EditorComponent.css'
+
+const socket = io('http://localhost:5000');
 
 function EditorComponent({ document, onUpdateContent }) {
     const quillRef = useRef(null);
-    const socketRef = useRef(null);
     const [editorSize, setEditorSize] = useState('normal');
-
-    const quillModules = {
-        toolbar: {
-            container: '#toolbar',
-        },
-    };
+    const [showAddMemberPopup, setShowAddMemberPopup] = useState(false);
+    const [newMemberEmail, setNewMemberEmail] = useState('');
+    const [isRemoteUpdate, setIsRemoteUpdate] = useState(false); // To prevent feedback loop
 
     useEffect(() => {
-        // Initialize the socket only once
-        if (!socketRef.current) {
-            socketRef.current = io('http://localhost:5000'); // Replace with your server URL
-    
-            socketRef.current.on('connect', () => {
-                console.log('Connected to server');
-            });
-    
-            // Listen for document updates from the server
-            socketRef.current.on('document-update', (updatedContent) => {
-                if (quillRef.current) {
-                    const quill = quillRef.current.getEditor();
-                    quill.setContents(updatedContent); // Apply Delta from the server
-                }
-            });
-        }
-    
-        // Leave the previous room and join the new one when the document ID changes
-        if (socketRef.current) {
-            console.log('Switching to document:', document.id);
-    
-            // Leave the previous room if one exists
-            if (socketRef.current.currentRoom) {
-                socketRef.current.emit('leave-document', socketRef.current.currentRoom);
-                console.log('Left previous room:', socketRef.current.currentRoom);
-            }
-    
-            // Join the new room
-            socketRef.current.emit('join-document', document.id);
-            socketRef.current.currentRoom = document.id; // Track the current room
-        }
-    
-        // Cleanup (optional for when switching between documents quickly)
-        return () => {
-            // Leave the current room (but keep the socket connection open)
-            if (socketRef.current && socketRef.current.currentRoom) {
-                socketRef.current.emit('leave-document', socketRef.current.currentRoom);
-                console.log('Leaving room:', socketRef.current.currentRoom);
+        const fetchDocument = async () => {
+            const response = await fetch(`http://localhost:5000/getDocument/${document.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                const quill = quillRef.current.getEditor();
+                quill.setContents(data.content); // Load Delta content into Quill
+            } else {
+                console.error('Failed to fetch document');
             }
         };
+
+        fetchDocument();
     }, [document.id]);
 
     useEffect(() => {
-        if (quillRef.current && quillRef.current.getEditor()) {
-            const quill = quillRef.current.getEditor();
 
-            // Handle text changes
-            quill.on('text-change', (delta, oldDelta, source) => {
-                if (source === 'user') {
-                    const currentDelta = quill.getContents(); // Get the current Delta
-                    socketRef.current.emit('document-change', {
-                        _id: document.id,
-                        delta: delta, // Send only the change Delta
-                        content: currentDelta, // Send the updated document
-                    });
+        const quill = quillRef.current.getEditor(); // Access the Quill editor instance
 
-                    onUpdateContent(currentDelta); // Pass Delta to parent
-                }
+        const saveDocument = async () => {
+            const delta = quill.getContents(); // Get the Delta object
+            const response = await fetch('http://localhost:5000/saveDocument', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    documentId: document.id,
+                    content: delta, // Pass Delta to the backend
+                }),
             });
-        }
-    }, [document.id, onUpdateContent]);
+
+            if (response.ok) {
+                console.log('Document saved successfully');
+            } else {
+                console.error('Failed to save document');
+            }
+        };
+
+        const interval = setInterval(() => {
+            saveDocument();
+        }, 5000); // Save every 5 seconds
+
+        return () => clearInterval(interval);
+    }, [document.id]);
+
+    useEffect(() => {
+        const quill = quillRef.current.getEditor();
+
+        // Join the document room
+        socket.emit('join-document', document.id);
+
+        // Listen for updates from the server
+        socket.on('document-update', (delta) => {
+            const currentDelta = quill.getContents(); // Get current content
+
+            // Apply the received delta
+            quill.updateContents(delta);
+        });
+
+        // Handle local text changes
+        const handleTextChange = (delta, oldDelta, source) => {
+            if (source === 'user') {
+                socket.emit('document-change', { _id: document.id, delta }); // Send the delta to the server
+            }
+        };
+
+        quill.on('text-change', handleTextChange);
+
+        // Cleanup on component unmount
+        return () => {
+            socket.emit('leave-document', document.id); // Leave the room
+            socket.off('document-update'); // Remove server listener
+            quill.off('text-change', handleTextChange); // Remove local listener
+        };
+    }, [document.id]);
+
 
     const handleSizeChange = (e) => {
         setEditorSize(e.target.value);
+    };
+
+    const handleAddMember = async () => {
+        setShowAddMemberPopup(false); // Close the popup
+
+        if (!newMemberEmail) return;
+
+        try {
+            const response = await fetch('http://localhost:5000/addMember', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    documentId: document.id,
+                    memberEmail: newMemberEmail,
+                }),
+            });
+
+            if (response.ok) {
+                alert('Member added successfully!');
+            } else {
+                alert('Failed to add member.');
+            }
+        } catch (error) {
+            console.error('Error adding member:', error);
+        }
     };
 
     const getEditorStyle = () => {
@@ -99,16 +136,35 @@ function EditorComponent({ document, onUpdateContent }) {
         }
     };
 
+    const quillModules = {
+        toolbar: {
+            container: '#toolbar',
+        },
+    };
+
     return (
         <div className={`editor-container ${editorSize === 'full' ? 'full-screen' : ''}`} style={getEditorStyle()}>
-            <EditorToolbar onSizeChange={handleSizeChange} />
+            <EditorToolbar onSizeChange={handleSizeChange} onAddMember={setShowAddMemberPopup} />
             <ReactQuill
                 ref={quillRef}
                 theme="snow"
                 modules={quillModules}
-                value={document.content}
-                onChange={(content) => { }} // We're handling changes in the text-change event
             />
+            {showAddMemberPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h3>Add Member</h3>
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            value={newMemberEmail}
+                            onChange={(e) => setNewMemberEmail(e.target.value)}
+                        />
+                        <button onClick={handleAddMember}>Add</button>
+                        <button onClick={() => setShowAddMemberPopup(false)}>Cancel</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const EditorToolbar = ({ onSizeChange }) => (
+const EditorToolbar = ({ onSizeChange, onAddMember }) => (
 	<div id="toolbar">
 		<span className="ql-formats">
 			<select className="ql-font" defaultValue="arial">
@@ -65,6 +65,9 @@ const EditorToolbar = ({ onSizeChange }) => (
 				<option value="large">Large Editor</option>
 				<option value="full">Full Screen</option>
 			</select>
+		</span>
+		<span className="ql-formats" style={{ position: 'absolute', right: '10px', top: '5px' }}>
+			<button className="add-member-btn" onClick={() => onAddMember(true)}>Add Member</button>
 		</span>
 	</div>
 );

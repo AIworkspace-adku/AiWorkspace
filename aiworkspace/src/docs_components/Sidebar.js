@@ -10,7 +10,7 @@ function Sidebar({ documents, currentDoc, setCurrentDoc, addDocument, deleteDocu
     const [renameDocIndex, setRenameDocIndex] = useState(null);
     const [renameDocId, setRenameDocId] = useState(null);
     const [newDocTitle, setNewDocTitle] = useState('');
-    console.log(documents);
+    // console.log(documents);
 
     const handleRenameDialogOpen = (index, id) => {
         setRenameDocIndex(index);
@@ -29,10 +29,10 @@ function Sidebar({ documents, currentDoc, setCurrentDoc, addDocument, deleteDocu
         const updatedDocs = [...documents];
         updatedDocs[renameDocIndex].title = newDocTitle;
         try {
-			axios.post(`http://localhost:5000/renameDocuments/${renameDocId}/${newDocTitle}`);
-		} catch (error) {
-			console.error('Error renaming document:', error);
-		}
+            axios.post(`http://localhost:5000/renameDocuments/${renameDocId}/${newDocTitle}`);
+        } catch (error) {
+            console.error('Error renaming document:', error);
+        }
         setCurrentDoc(renameDocIndex);
         handleRenameDialogClose();
     };

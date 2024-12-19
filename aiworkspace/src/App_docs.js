@@ -5,14 +5,15 @@ import axios from 'axios';
 import { Typography, Box, Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from './docs_components/Sidebar';
+import CloseIcon from '@mui/icons-material/Close';
 import EditorComponent from './docs_components/EditorComponent';
 import './App_docs.css';
 
-function WelcomeScreen({ onCreateDocument }) {
+function WelcomeScreen({ onCreateDocument, username }) {
 	return (
 		<Box className="welcome-screen">
 			<Typography variant="h3" gutterBottom>
-				Welcome to Your Document Editor
+				Welcome to Your Document Editor {username}
 			</Typography>
 			<Typography variant="h6" gutterBottom>
 				Get started by creating a new document
@@ -30,23 +31,52 @@ function WelcomeScreen({ onCreateDocument }) {
 	);
 }
 
-function App() {
+function App_docs() {
 	const [documents, setDocuments] = useState([]);
+	const [openDocuments, setOpenDocuments] = useState([]);
 	const [currentDoc, setCurrentDoc] = useState(null);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [newDocTitle, setNewDocTitle] = useState('');
 	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 	const [docToRename, setDocToRename] = useState(null);
+	const [data, setData] = useState(null);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		fetchDocuments();
+		if (data) {
+			fetchDocuments();
+		}
+	}, [data]);
+
+	useEffect(() => {
+		// Fetch data from the protected route
+		fetch('http://localhost:5000/protected', {
+			method: 'POST',
+			credentials: 'include',
+			withCredentials: true, // Include cookies in the request
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Failed to fetch data');
+				}
+				return response.json();
+			})
+			.then((data) => {
+				setData(data);
+			})
+			.catch((error) => {
+				console.log(error);
+				setError(error.message)
+			});
 	}, []);
 
 	const fetchDocuments = async () => {
 		try {
-			const response = await axios.post('http://localhost:5000/fetchDocuments');
+			const response = await axios.post('http://localhost:5000/fetchDocuments', {
+				owner: data.email
+			});
 			setDocuments(response.data);
-			console.log(response.data);
+			// console.log(response.data);
 		} catch (error) {
 			console.error('Error fetching documents:', error);
 		}
@@ -58,6 +88,7 @@ function App() {
 		try {
 			const response = await axios.post('http://localhost:5000/documents', {
 				title: newDocTitle || 'Untitled Document',
+				owner: data.email,
 				content: ''
 			});
 			setDocuments([...documents, response.data]);
@@ -88,6 +119,14 @@ function App() {
 		setDocuments(updatedDocs);
 	};
 
+	const setOnToolbar = (docs) => {
+		setOpenDocuments([openDocuments, ...docs]);
+	}
+
+	const onCloseDocument = (docId) => {
+		setOpenDocuments((prevDocs) => prevDocs.filter((doc) => doc.id !== docId));
+	};
+
 	const handleRenameClose = () => setDocToRename(null);
 
 	return (
@@ -100,6 +139,7 @@ function App() {
 					addDocument={handleDialogOpen}
 					deleteDocument={deleteDocument}
 					renameDocument={setDocToRename}
+					onClick={() => setOnToolbar(documents)}
 				/>
 			)}
 
@@ -108,9 +148,24 @@ function App() {
 					<IconButton onClick={() => setIsSidebarVisible(!isSidebarVisible)} color="primary">
 						<MenuIcon />
 					</IconButton>
+
+					<div className="open-documents">
+						{openDocuments.map((doc) => (
+							<div key={doc._id} className="open-document-item">
+								<span>{doc.title}</span> {/* Display the document name */}
+								<IconButton
+									onClick={() => onCloseDocument(doc._id)} // Close document handler
+									color="secondary"
+									size="small"
+								>
+									<CloseIcon />
+								</IconButton>
+							</div>
+						))}
+					</div>
 				</div>
 				{currentDoc === null ? (
-					<WelcomeScreen onCreateDocument={handleDialogOpen} />
+					<WelcomeScreen onCreateDocument={handleDialogOpen} username={data ? data.username : ''} />
 				) : (
 					<EditorComponent
 						document={{
@@ -176,4 +231,4 @@ function App() {
 	);
 }
 
-export default App;
+export default App_docs;
