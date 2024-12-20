@@ -3,16 +3,27 @@ import ReactQuill from 'react-quill';
 import { io } from 'socket.io-client';
 import EditorToolbar from './EditorToolbar';
 import 'react-quill/dist/quill.snow.css';
-import './EditorComponent.css'
+import './EditorComponent.css';
+import Quill from 'quill';
+import QuillCursors from 'quill-cursors';
 
+Quill.register('modules/cursors', QuillCursors);
 const socket = io('http://localhost:5000');
 
-function EditorComponent({ document, onUpdateContent }) {
+function EditorComponent({ userData, document, onUpdateContent }) {
     const quillRef = useRef(null);
     const [editorSize, setEditorSize] = useState('normal');
     const [showAddMemberPopup, setShowAddMemberPopup] = useState(false);
     const [newMemberEmail, setNewMemberEmail] = useState('');
-    const [isRemoteUpdate, setIsRemoteUpdate] = useState(false); // To prevent feedback loop
+
+    const quillModules = {
+        toolbar: {
+            container: '#toolbar'
+        },
+        cursors: {
+            transformOnTextChange: true,
+        },
+    };
 
     useEffect(() => {
         const fetchDocument = async () => {
@@ -62,6 +73,9 @@ function EditorComponent({ document, onUpdateContent }) {
 
     useEffect(() => {
         const quill = quillRef.current.getEditor();
+        const cursors = quill.getModule('cursors');
+        console.log('Quill Editor:', quill);
+        console.log('Cursors Module:', quill.getModule('cursors'));
 
         // Join the document room
         socket.emit('join-document', document.id);
@@ -74,6 +88,13 @@ function EditorComponent({ document, onUpdateContent }) {
             quill.updateContents(delta);
         });
 
+        socket.on('cursor-update', ({ userId, range, color, name }) => {
+            if (userId !== socket.id) {
+                cursors.createCursor(userId, name, color);
+                cursors.moveCursor(userId, range);
+            }
+        });
+
         // Handle local text changes
         const handleTextChange = (delta, oldDelta, source) => {
             if (source === 'user') {
@@ -81,13 +102,28 @@ function EditorComponent({ document, onUpdateContent }) {
             }
         };
 
+        const handleSelectionChange = (range) => {
+            if (range) {
+                const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+                socket.emit('cursor-move', {
+                    documentId: document.id,
+                    range,
+                    color,
+                    name: userData?.username || 'Anonymous', // Replace with actual user's name
+                });
+            }
+        };
+
         quill.on('text-change', handleTextChange);
+        quill.on('selection-change', handleSelectionChange);
 
         // Cleanup on component unmount
         return () => {
             socket.emit('leave-document', document.id); // Leave the room
             socket.off('document-update'); // Remove server listener
+            quill.on('selection-change', handleSelectionChange);
             quill.off('text-change', handleTextChange); // Remove local listener
+            quill.off('selection-change', handleSelectionChange);
         };
     }, [document.id]);
 
@@ -134,12 +170,6 @@ function EditorComponent({ document, onUpdateContent }) {
             default:
                 return {};
         }
-    };
-
-    const quillModules = {
-        toolbar: {
-            container: '#toolbar',
-        },
     };
 
     return (

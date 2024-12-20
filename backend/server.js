@@ -42,9 +42,14 @@ mongoose.connect(process.env.MONGO_URI, {
 
 io.on('connection', (socket) => {
 	console.log('New client connected');
+	const usersByDocument = {};
 
 	socket.on('join-document', async (documentId) => {
 		socket.join(documentId);
+		if (!usersByDocument[documentId]) {
+            usersByDocument[documentId] = {};
+        }
+        usersByDocument[documentId][socket.id] = { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` };
 		console.log(`Client joined room: ${documentId}`);
 
 		try {
@@ -69,8 +74,20 @@ io.on('connection', (socket) => {
 		}
 	});
 
+	socket.on('cursor-move', ({ documentId, range, color, name }) => {
+        socket.to(documentId).emit('cursor-update', {
+            userId: socket.id,
+            range,
+            color,
+            name,
+        });
+    });
+
 	socket.on('disconnect', () => {
 		console.log('Client disconnected');
+		for (const documentId in usersByDocument) {
+            delete usersByDocument[documentId][socket.id];
+        }
 	});
 });
 

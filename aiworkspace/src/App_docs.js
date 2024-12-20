@@ -168,6 +168,7 @@ function App_docs() {
 					<WelcomeScreen onCreateDocument={handleDialogOpen} username={data ? data.username : ''} />
 				) : (
 					<EditorComponent
+						userData={data}
 						document={{
 							id: currentDoc,
 							content: documents.find(doc => doc._id === currentDoc)?.content || ''
