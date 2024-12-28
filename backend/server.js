@@ -79,6 +79,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // Login route
+// Login route
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -95,12 +96,19 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Respond with success message (omit token for now)
-    res.json({ message: 'Login successful!' });
+    // Respond with user data
+    res.json({ 
+      message: 'Login successful!',
+      user: {
+        username: user.username,
+        email: user.email
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;

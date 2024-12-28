@@ -1,0 +1,19 @@
+.dashboardContainer {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  height: 100vh;
+  /* Use the provided gradient with a slight angle adjustment for interest */
+  background: linear-gradient(168deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 50%, rgba(75,101,215,1) 100%);
+  color: #eaeaea;
+  overflow: hidden;
+  font-family: sans-serif;
+
+  }
+  
+  @media (max-width: 768px) {
+    .dashboardContainer {
+      grid-template-columns: 60px 1fr; 
+      /* Might hide or overlay the right panel on mobile or use a toggle */
+    }
+  }
+  

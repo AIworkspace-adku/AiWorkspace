@@ -1,0 +1,154 @@
+.tasksContainer {
+  display: flex;
+  flex-direction: column;
+  color: #eaeaea;
+  background: #1e1e1e; /* Solid dark background */
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 2rem; /* Increased font size */
+  font-weight: bold;
+}
+
+.addTask {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.addInput {
+  background: #2c2c2e; /* Solid dark gray */
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.8rem;
+  font-size: 1.4rem; /* Larger text */
+  outline: none;
+  transition: border 0.3s;
+}
+
+.addInput:focus {
+  border-color: #ffcc00;
+}
+
+.addButton {
+  background: #4caf50; /* Green for action */
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem; /* Larger button padding */
+  font-size: 1.5rem; /* Larger text size */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.addButton:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
+
+.taskList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taskItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c2c2e; /* Solid dark gray */
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem; /* Increased padding */
+  margin-bottom: 1rem;
+  font-size: 1.5rem; /* Larger font size */
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.taskItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.completed .taskName {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.taskContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkbox {
+  width: 1.5rem; /* Larger checkbox */
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.taskName {
+  color: #eaeaea;
+  font-size: 1.5rem; /* Bigger task text */
+}
+
+.editInput {
+  font-size: 1.4rem;
+  padding: 0.6rem;
+  border: 1px solid #444;
+  background: #1e1e1e;
+  color: #eaeaea;
+  border-radius: 4px;
+  outline: none;
+}
+
+.editInput:focus {
+  border: 1px solid #ffcc00;
+}
+
+.taskActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 1.8rem; /* Bigger icons */
+  transition: color 0.3s, transform 0.2s;
+}
+
+.actionButton:hover {
+  color: #68f1a6; /* Bright yellow hover effect */
+  transform: scale(1.2);
+}
+
+.saveButton {
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.4rem; /* Bigger save button text */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.saveButton:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}

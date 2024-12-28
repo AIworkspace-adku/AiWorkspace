@@ -1,0 +1,58 @@
+.mainContent {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 95%;
+  font-size: 2rem;
+
+}
+
+.greeting {
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.projectsSection {
+  margin-bottom: 2rem;
+}
+
+/* The project card container is just a container; the ProjectCards themselves will handle glass morph */
+
+/* Bottom section layout */
+.bottomSection {
+  padding-top: 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  
+}
+
+.tasksWrapper {
+  /* Non-glass, just a dark container */
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.scheduleWrapper {
+  /* Glass morph for schedule */
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.scheduleWrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+  .bottomSection {
+    grid-template-columns: 1fr;
+  }
+}

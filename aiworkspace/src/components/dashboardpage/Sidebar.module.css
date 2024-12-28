@@ -1,0 +1,170 @@
+.sidebar {
+  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.4); 
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  padding-top: 4rem;
+  color: #eee;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  font-size: 19px;
+  gap: 2rem;
+}
+
+.nodeContainer {
+  position: relative;
+  padding: 0.3rem 0;
+}
+
+.nodeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+.nodeInfo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.nodeInfo:hover {
+  transform: scale(1.02);
+  color: #fff;
+}
+
+.nodeName {
+  color: #eee;
+}
+
+.optionsBtn {
+  background: none;
+  border: none;
+  color: #eee;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 4px;
+  transition: background 0.3s, transform 0.2s;
+}
+.optionsBtn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+}
+
+.optionsMenuItem {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.optionsMenuItem:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.children {
+  margin-left: 1.5rem;
+  border-left: 1px dashed rgba(255,255,255,0.2);
+  padding-left: 0.5rem;
+}
+
+/* Modals */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modalContainer {
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 300px;
+  color: #eee;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.modalContainer h2 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 0.5rem;
+}
+
+.modalInput {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #eee;
+  margin-bottom: 1rem;
+  transition: background 0.3s;
+}
+.modalInput:focus {
+  background: rgba(255,255,255,0.1);
+  outline: none;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.submitBtn, .cancelBtn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #eee;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.submitBtn:hover {
+  background: rgba(75,101,215,0.3);
+  transform: scale(1.05);
+}
+.cancelBtn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+
+.createTeamBtn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #eee;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 1rem;
+  transition: background 0.3s, transform 0.2s;
+}
+.createTeamBtn:hover {
+  background: rgba(75,101,215,0.3);
+  transform: scale(1.02);
+}
