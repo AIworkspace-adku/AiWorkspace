@@ -169,7 +169,7 @@ function App_docs() {
 				) : (
 					<EditorComponent
 						userData={data}
-						document={{
+						document_data={{
 							id: currentDoc,
 							content: documents.find(doc => doc._id === currentDoc)?.content || ''
 						}}

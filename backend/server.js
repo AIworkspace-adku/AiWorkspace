@@ -9,6 +9,7 @@ const User = require('./models/User');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Load environment variables
 dotenv.config();
@@ -47,9 +48,9 @@ io.on('connection', (socket) => {
 	socket.on('join-document', async (documentId) => {
 		socket.join(documentId);
 		if (!usersByDocument[documentId]) {
-            usersByDocument[documentId] = {};
-        }
-        usersByDocument[documentId][socket.id] = { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` };
+			usersByDocument[documentId] = {};
+		}
+		usersByDocument[documentId][socket.id] = { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` };
 		console.log(`Client joined room: ${documentId}`);
 
 		try {
@@ -75,19 +76,19 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('cursor-move', ({ documentId, range, color, name }) => {
-        socket.to(documentId).emit('cursor-update', {
-            userId: socket.id,
-            range,
-            color,
-            name,
-        });
-    });
+		socket.to(documentId).emit('cursor-update', {
+			userId: socket.id,
+			range,
+			color,
+			name,
+		});
+	});
 
 	socket.on('disconnect', () => {
 		console.log('Client disconnected');
 		for (const documentId in usersByDocument) {
-            delete usersByDocument[documentId][socket.id];
-        }
+			delete usersByDocument[documentId][socket.id];
+		}
 	});
 });
 
@@ -106,6 +107,28 @@ app.post('/saveDocument', async (req, res) => {
 	} catch (error) {
 		console.error('Error saving document:', error);
 		res.status(500).json({ message: 'Error saving document', error });
+	}
+});
+
+app.post('/gemini-query', async (req, res) => {
+	const { query } = req.body;
+
+	try {
+		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+		const prompt = query;
+
+		const result = await model.generateContent(prompt);
+
+		console.log("Full response from Gemini API:", result);
+        const suggestions = result.response.text()
+
+		res.status(200).json({ suggestions });
+	} catch (error) {
+		console.error('Error querying Gemini API:', error.message);
+		console.error('Full error:', error);
+		res.status(500).json({ error: 'Failed to fetch suggestions' });
 	}
 });
 
