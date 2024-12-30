@@ -1,0 +1,37 @@
+.projectCardsContainer {
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+/* Glass morph on each card */
+.card {
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(6px);
+  padding: 1.05rem;
+  border-radius: 8px;
+  width: 270px;
+  transition: background 0.3s ease, transform 0.2s, box-shadow 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  height: 150px;
+  
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.progressBarBackground {
+  background: rgba(255,255,255,0.1);
+  height: 8px;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+.progressBarFill {
+  background: #4caf50;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}

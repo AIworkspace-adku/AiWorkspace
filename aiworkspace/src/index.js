@@ -7,7 +7,7 @@ import Signin from './signup/signin/Signin';
 import Register from './signup/register/Register';
 import Docs from './App_docs'
 import White from './whiteboard/White';
-import Simplified from './SimplifiedDoc';
+import DashboardPage from './components/dashboardpage/DashboardPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +19,7 @@ root.render(
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/docs" element={<Docs />} />
         <Route exact path="/whiteboard" element={<White />} />
-        <Route exact path="/simplified" element={<Simplified />} />
+        <Route exact path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </Router>
 

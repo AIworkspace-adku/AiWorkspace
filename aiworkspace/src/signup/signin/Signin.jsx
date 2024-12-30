@@ -27,10 +27,15 @@ const Signin = () => {
     });
 
       if (response.data) {
-        console.log("Hi there");
-        setErrorMessage('');
-        alert('Login successful!');
-        navigate('/'); // Navigate to the home page
+        // Check the response structure: { message: 'Login successful!', user: { username, email } }
+        if (response.data.user && response.data.user.username) {
+          localStorage.setItem('username', response.data.user.username);
+          setErrorMessage('');
+          alert('Login successful!');
+          navigate('/dashboard'); 
+        } else {
+          setErrorMessage('Login response did not include a user object');
+        }
       }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Something went wrong, try again.');

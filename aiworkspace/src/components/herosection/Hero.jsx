@@ -1,5 +1,4 @@
 import React from 'react';
-import Spline from '@splinetool/react-spline';
 import Split from 'react-split';
 import './Hero.css';
 
@@ -18,9 +17,7 @@ const Hero = ({ data }) => {
 
                 </div>
                 <div className="land-right">
-                    <Spline
-                        scene="https://prod.spline.design/YirO5-RgSudF04ca/scene.splinecode"
-                    />
+                
                 </div>
             </Split>
         </div>

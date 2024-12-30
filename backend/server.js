@@ -263,6 +263,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // Login route
+// Login route
 app.post('/api/auth/login', async (req, res) => {
 	const { email, password } = req.body;
 
@@ -337,6 +338,7 @@ app.post('/protected', authenticate, (req, res) => {
 app.post('/', (req, res) => {
 	res.send('Server is running');
 });
+
 
 // Start the server
 const PORT = process.env.PORT;
