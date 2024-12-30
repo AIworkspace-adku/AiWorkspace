@@ -331,7 +331,7 @@ const authenticate = (req, res, next) => {
 
 // Example protected route
 app.post('/protected', authenticate, (req, res) => {
-	// console.log('User:', req.user);
+	console.log('User:', req.user);
 	res.json({ username: req.user.username, email: req.user.email });
 });
 

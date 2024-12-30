@@ -28,15 +28,13 @@ const Signin = () => {
 
       if (response.data) {
         // Check the response structure: { message: 'Login successful!', user: { username, email } }
-        if (response.data.user && response.data.user.username) {
-          localStorage.setItem('username', response.data.user.username);
           setErrorMessage('');
           alert('Login successful!');
-          navigate('/dashboard'); 
-        } else {
+          navigate('/dashboard');
+      } 
+        else {
           setErrorMessage('Login response did not include a user object');
         }
-      }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Something went wrong, try again.');
       console.error('Error logging in:', error); // Log error details for debugging
