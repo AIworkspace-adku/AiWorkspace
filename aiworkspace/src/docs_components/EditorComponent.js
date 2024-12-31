@@ -22,7 +22,21 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
     const [previousQueries, setPreviousQueries] = useState([]);
     const [currentQueryIndex, setCurrentQueryIndex] = useState(-1);
     const [queryResult, setQueryResult] = useState('');
+    const [lastModified, setLastModified] = useState(null);
+    const [lastEditor, setLastEditor] = useState([]);
 
+    const handleDownload = () => {
+        const quill = quillRef.current.getEditor();
+        const content = quill.getContents();
+        const blob = new Blob([JSON.stringify(content)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${document_data.id}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+    };
     const quillModules = {
         toolbar: {
             container: '#toolbar'
@@ -85,22 +99,29 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
         const quill = quillRef.current.getEditor(); // Access the Quill editor instance
 
         const saveDocument = async () => {
-            const delta = quill.getContents(); // Get the Delta object
-            const response = await fetch('http://localhost:5000/saveDocument', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    documentId: document_data.id,
-                    content: delta, // Pass Delta to the backend
-                }),
-            });
+            const quill = quillRef.current.getEditor();
+            const delta = quill.getContents();
 
-            if (response.ok) {
-                console.log('document_data saved successfully');
-            } else {
-                console.error('Failed to save document_data');
+            try {
+                const response = await fetch('http://localhost:5000/saveDocument', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        documentId: document_data.id,
+                        content: delta,
+                        user: userData.username,
+                    }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setLastModified(data.document.lastModified);
+                    setLastEditor(data.document.lastEditedBy.user);
+                } else {
+                    console.error('Failed to save document');
+                }
+            } catch (error) {
+                console.error('Error saving document:', error);
             }
         };
 
@@ -169,6 +190,8 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
                 });
             }
         };
+
+        
 
         quill.on('text-change', handleTextChange);
         quill.on('selection-change', handleSelectionChange);
@@ -295,12 +318,15 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
 
     return (
         <div className={`editor-container ${editorSize === 'full' ? 'full-screen' : ''}`} style={getEditorStyle()}>
-            <EditorToolbar onSizeChange={handleSizeChange} onAddMember={setShowAddMemberPopup} />
-            <ReactQuill
-                ref={quillRef}
-                theme="snow"
-                modules={quillModules}
-            />
+            <EditorToolbar onSizeChange={setEditorSize} onAddMember={setShowAddMemberPopup} />
+
+            <div className="document-info">
+                <p>Last Edited By: <strong>{lastEditor}</strong></p>
+                <p>Last Modified: <strong>{new Date(lastModified).toLocaleString()}</strong></p>
+                <button onClick={handleDownload}>Download</button>
+            </div>
+
+            <ReactQuill ref={quillRef} theme="snow" modules={quillModules} />
             {isDropdownOpen && (
                 <div className="ai-query-popup">
                     <input

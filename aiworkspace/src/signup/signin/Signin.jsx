@@ -1,4 +1,3 @@
-// src/pages/Signin.jsx
 import React, { useState } from 'react';
 import './Signin.css';
 import { useNavigate } from 'react-router-dom';
@@ -7,37 +6,31 @@ import axios from 'axios';
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    console.log('Form submitted'); // Debugging log
-    console.log('Username:', email); // Log username
-    console.log('Password:', password); // Log password
+    e.preventDefault();
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
       },
-    {
-      withCredentials: true
-    });
+      {
+        withCredentials: true
+      });
 
       if (response.data) {
-        // Check the response structure: { message: 'Login successful!', user: { username, email } }
-          setErrorMessage('');
-          alert('Login successful!');
-          navigate('/dashboard');
-      } 
-        else {
-          setErrorMessage('Login response did not include a user object');
-        }
+        setErrorMessage('');
+        alert('Login successful!');
+        navigate('/dashboard');
+      } else {
+        setErrorMessage('Invalid login credentials');
+      }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Something went wrong, try again.');
-      console.error('Error logging in:', error); // Log error details for debugging
     }
   };
 
@@ -47,9 +40,9 @@ const Signin = () => {
         <h2 className="title">Login</h2>
         <form className="form" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="username">Email</label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
+              type="email"
               name="email"
               id="email"
               value={email}
@@ -59,14 +52,23 @@ const Signin = () => {
           </div>
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="show-password-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
           </div>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <button type="submit" className="btn">Login</button>

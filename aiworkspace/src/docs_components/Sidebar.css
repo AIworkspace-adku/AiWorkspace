@@ -1,0 +1,90 @@
+/* Sidebar Container */
+.sidebar {
+    width: 300px;
+    background-color: #1e1e2f;
+    color: #eaeaea;
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Title and Headers */
+  .sidebar h6 {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar h6.project-docs {
+    margin-top: 20px;
+  }
+  
+  /* Button Styling */
+  .sidebar button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    padding: 10px 15px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .sidebar button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+  }
+  
+  #file-upload {
+    display: none;
+  }
+  
+  /* Document List Styling */
+  .document-list, .project-docs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .document-list-item, .project-docs-list-item {
+    background-color: transparent;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .document-list-item:hover, .project-docs-list-item:hover {
+    background-color: rgba(75, 101, 215, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .document-list-item.selected {
+    background-color: #4caf50;
+  }
+  
+  /* Icons */
+  .sidebar .MuiIconButton-root {
+    color: #eaeaea;
+    transition: color 0.3s, transform 0.2s;
+  }
+  
+  .sidebar .MuiIconButton-root:hover {
+    color: #fff;
+    transform: scale(1.1);
+  }
+  
+  /* Divider */
+  .sidebar-divider {
+    margin: 20px 0;
+    height: 1px;
+    background-color: #444;
+  }
+  

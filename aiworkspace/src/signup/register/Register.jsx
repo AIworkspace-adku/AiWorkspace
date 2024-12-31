@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useState } from 'react';
 import './Register.css';
 import { useNavigate } from 'react-router-dom';
@@ -9,14 +8,31 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Updated from useHistory to useNavigate
+  const navigate = useNavigate();
+
+  const measurePasswordStrength = (password) => {
+    if (password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password)) {
+      return 'strong';
+    } else if (password.length >= 6) {
+      return 'medium';
+    }
+    return 'weak';
+  };
+
+  const handlePasswordChange = (e) => {
+    const pwd = e.target.value;
+    setPassword(pwd);
+    setPasswordStrength(measurePasswordStrength(pwd));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
+      setErrorMessage('Passwords do not match');
       return;
     }
 
@@ -29,7 +45,7 @@ const Register = () => {
 
       if (response.data) {
         alert('Registration successful! You can now log in.');
-        navigate('/signin'); // Updated from history.push to navigate
+        navigate('/signin');
       }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Something went wrong, try again.');
@@ -65,14 +81,26 @@ const Register = () => {
           </div>
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                id="password"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+              />
+              <button
+                type="button"
+                className="show-password-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            <div className={`password-strength ${passwordStrength}`}>
+              {passwordStrength && `Password Strength: ${passwordStrength.toUpperCase()}`}
+            </div>
           </div>
           <div className="input-group">
             <label htmlFor="confirm-password">Confirm Password</label>

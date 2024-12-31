@@ -8,6 +8,9 @@ import Register from './signup/register/Register';
 import Docs from './App_docs'
 import White from './whiteboard/White';
 import DashboardPage from './components/dashboardpage/DashboardPage';
+import TeamPage from '../src/teams/TeamPage';
+import GanttChart from '../src/projects/GanttChart';
+import ProjectPage from '../src/projects/ProjectPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -20,6 +23,9 @@ root.render(
         <Route exact path="/docs" element={<Docs />} />
         <Route exact path="/whiteboard" element={<White />} />
         <Route exact path="/dashboard" element={<DashboardPage />} />
+        <Route path="/teams/:teamId" element={<TeamPage />} />
+        <Route path="/projects/:projectId" element={<ProjectPage />} />
+        <Route path="/planning" element={<GanttChart />} />
       </Routes>
     </Router>
 

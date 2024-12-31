@@ -1,0 +1,176 @@
+.teamPage {
+    display: flex;
+    background: linear-gradient(168deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 50%, rgba(75,101,215,1) 100%);
+    color: #eaeaea;
+    height: 100vh;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 4rem; /* Larger padding for content */
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    overflow-y: auto;
+    font-size: 1.8rem; /* Consistent large font size */
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .teamNameInput {
+    font-size: 2.5rem; /* Larger text for team name */
+    padding: 1rem 1.5rem;
+    color: #fff;
+    background: #2c2c2e;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .actionButton {
+    background: #4caf50;
+    color: white;
+    font-size: 1.8rem; /* Larger button font size */
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .actionButton:hover {
+    background: #45a049;
+  }
+  
+  .membersSection,
+  .projectsSection {
+    background: rgba(0, 0, 0, 0.5); /* Dark container */
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .membersSection h3,
+  .projectsSection h3 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .membersList {
+    list-style: none;
+    padding: 0;
+    font-size: 1.8rem; /* Larger list font size */
+  }
+  
+  .memberItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .memberItem:last-child {
+    border-bottom: none;
+  }
+  
+  .memberInput {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1e1e1e;
+    color: #fff;
+    font-size: 1.6rem;
+  }
+  
+  .addButton {
+    background: #4caf50;
+    color: white;
+    font-size: 1.8rem;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    margin-left: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .addButton:hover {
+    background: #45a049;
+  }
+  
+  .projectGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 2rem;
+  }
+  
+  .projectCard {
+    background: rgba(255, 255, 255, 0.07); /* Glass morph */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.8rem; /* Larger card font size */
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  
+  .projectCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .progressBar {
+    background: rgba(255, 255, 255, 0.1);
+    width: 100%;
+    height: 15px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  
+  .progressFill {
+    background: #4caf50;
+    height: 100%;
+  }
+  
+  .addProject {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+  
+  .projectInput {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1e1e1e;
+    color: #fff;
+    font-size: 1.6rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .content {
+      padding: 2rem;
+    }
+  
+    .projectGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .teamNameInput {
+      font-size: 2rem;
+    }
+  
+    .membersSection h3,
+    .projectsSection h3 {
+      font-size: 2rem;
+    }
+  }
+  

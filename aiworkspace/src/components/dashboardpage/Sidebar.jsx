@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import styles from './Sidebar.module.css';
 import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus } from 'react-icons/fa';
 
-const Sidebar = ({ userName }) => {
-  // Sample data structure:
-  // "Your Teams" -> array of teams (folders), each team can have projects (files)
-  // "Teams" -> user is a member (for now, empty)
+const Sidebar = () => {
   const [yourTeams, setYourTeams] = useState([
     {
       type: 'folder',
@@ -18,128 +15,82 @@ const Sidebar = ({ userName }) => {
     }
   ]);
 
-  const [memberTeams, setMemberTeams] = useState([]); // teams user is member of
+  const [memberTeams, setMemberTeams] = useState([]); // Teams user is a member of
   const [expanded, setExpanded] = useState({ yourTeams: true, teams: true });
-  
-  // Context menus and modals
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createContext, setCreateContext] = useState({ parentId: null, type: 'folder', parentType: 'yourTeams' });
-  const [showRenameModal, setShowRenameModal] = useState(false);
-  const [renameContext, setRenameContext] = useState({ id: null, currentName: '', parentType: 'yourTeams' });
+  const [createContext, setCreateContext] = useState({ parentId: null, type: 'folder' });
   const [showOptionsFor, setShowOptionsFor] = useState(null);
 
-  // Handlers
   const toggleExpand = (key) => {
-    setExpanded({ ...expanded, [key]: !expanded[key] });
+    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleCreateTeam = () => {
-    // Create a new team under "Your Teams"
-    setCreateContext({ parentId: null, type: 'folder', parentType: 'yourTeams' });
+    setCreateContext({ parentId: null, type: 'folder' });
     setShowCreateModal(true);
   };
 
   const handleCreateProject = (teamId) => {
-    // Create a new project under a specific team
-    setCreateContext({ parentId: teamId, type: 'file', parentType: 'yourTeams' });
+    setCreateContext({ parentId: teamId, type: 'file' });
     setShowCreateModal(true);
   };
 
   const handleItemCreated = (newItem) => {
     if (createContext.parentId === null) {
-      // Creating a new team under Your Teams
-      setYourTeams([...yourTeams, newItem]);
+      // Creating a new team
+      setYourTeams((prev) => [...prev, newItem]);
     } else {
-      // Creating a project inside a team
-      const updated = yourTeams.map(t => {
-        if (t.id === createContext.parentId) {
-          return { ...t, children: [...t.children, newItem] };
-        }
-        return t;
-      });
-      setYourTeams(updated);
+      // Adding a project to a team
+      setYourTeams((prev) =>
+        prev.map((team) =>
+          team.id === createContext.parentId
+            ? { ...team, children: [...team.children, newItem] }
+            : team
+        )
+      );
     }
+    setShowCreateModal(false);
   };
 
-  const handleRename = (id, newName) => {
-    const renameInList = (list) => list.map(item => {
-      if (item.id === id) {
-        return { ...item, name: newName };
-      } else if (item.type === 'folder') {
-        return { ...item, children: renameInList(item.children) };
-      }
-      return item;
-    });
-
-    setYourTeams(renameInList(yourTeams));
-  };
-
-  const handleDelete = (itemId) => {
-    const deleteFromList = (list) => list
-      .filter(item => item.id !== itemId)
-      .map(item => item.type === 'folder' ? { ...item, children: deleteFromList(item.children) } : item);
-
-    setYourTeams(deleteFromList(yourTeams));
-  };
-
-  // Render Helpers
-  const renderProject = (project) => {
-    return (
-      <div className={styles.nodeContainer} key={project.id} onMouseLeave={() => setShowOptionsFor(null)}>
-        <div className={styles.nodeHeader}>
-          <div className={styles.nodeInfo}>
-            <FaFileAlt />
-            <span className={styles.nodeName}>{project.name}</span>
-          </div>
-          <button className={styles.optionsBtn} onClick={() => setShowOptionsFor(project.id)}>
-            <FaEllipsisH />
-          </button>
-          {showOptionsFor === project.id && (
-            <div className={styles.optionsMenu}>
-              <div className={styles.optionsMenuItem} onClick={() => {
-                setRenameContext({ id: project.id, currentName: project.name });
-                setShowRenameModal(true);
-                setShowOptionsFor(null);
-              }}>Rename</div>
-              <div className={styles.optionsMenuItem} onClick={() => {
-                handleDelete(project.id);
-                setShowOptionsFor(null);
-              }}>Delete</div>
-            </div>
-          )}
+  const renderProject = (project) => (
+    <div className={styles.nodeContainer} key={project.id}>
+      <div className={styles.nodeHeader}>
+        <div className={styles.nodeInfo}>
+          <FaFileAlt />
+          <span className={styles.nodeName}>{project.name}</span>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   const renderTeam = (team) => {
     const isTeamExpanded = expanded[team.id] !== false;
+
     return (
-      <div className={styles.nodeContainer} key={team.id} onMouseLeave={() => setShowOptionsFor(null)}>
+      <div className={styles.nodeContainer} key={team.id}>
         <div className={styles.nodeHeader}>
-          <div className={styles.nodeInfo} onClick={() => setExpanded({ ...expanded, [team.id]: !isTeamExpanded })}>
+          <a
+            href={`/teams/${team.id}`} // Use href for navigation
+            className={styles.nodeInfo}
+          >
             {isTeamExpanded ? <FaFolderOpen /> : <FaFolder />}
             <span className={styles.nodeName}>{team.name}</span>
-          </div>
+          </a>
           <button className={styles.optionsBtn} onClick={() => setShowOptionsFor(team.id)}>
             <FaEllipsisH />
           </button>
           {showOptionsFor === team.id && (
             <div className={styles.optionsMenu}>
-              <div className={styles.optionsMenuItem} onClick={() => handleCreateProject(team.id)}>Add Project</div>
-              <div className={styles.optionsMenuItem} onClick={() => {
-                setRenameContext({ id: team.id, currentName: team.name });
-                setShowRenameModal(true);
-                setShowOptionsFor(null);
-              }}>Rename</div>
-              <div className={styles.optionsMenuItem} onClick={() => {
-                handleDelete(team.id);
-                setShowOptionsFor(null);
-              }}>Delete</div>
+              <div
+                className={styles.optionsMenuItem}
+                onClick={() => handleCreateProject(team.id)}
+              >
+                Add Project
+              </div>
             </div>
           )}
         </div>
-        {isTeamExpanded && team.children && team.children.length > 0 && (
+        {isTeamExpanded && team.children && (
           <div className={styles.children}>
             {team.children.map(renderProject)}
           </div>
@@ -161,14 +112,14 @@ const Sidebar = ({ userName }) => {
             <FaPlus />
           </button>
         </div>
-        {expanded.yourTeams && yourTeams.length > 0 && (
+        {expanded.yourTeams && (
           <div className={styles.children}>
             {yourTeams.map(renderTeam)}
           </div>
         )}
       </div>
 
-      {/* Teams (User is a member) */}
+      {/* Member Teams */}
       <div className={styles.nodeContainer}>
         <div className={styles.nodeHeader}>
           <div className={styles.nodeInfo} onClick={() => toggleExpand('teams')}>
@@ -178,7 +129,6 @@ const Sidebar = ({ userName }) => {
         </div>
         {expanded.teams && memberTeams.length > 0 && (
           <div className={styles.children}>
-            {/* Show teams the user is member of (if any) */}
             {memberTeams.map(renderTeam)}
           </div>
         )}
@@ -209,10 +159,12 @@ const Sidebar = ({ userName }) => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContainer}>
             <h2>Create New {createContext.type === 'folder' ? 'Team' : 'Project'}</h2>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className={styles.modalInput}
-              placeholder={createContext.type === 'folder' ? 'Team Name' : 'Project Name'} 
+              placeholder={
+                createContext.type === 'folder' ? 'Team Name' : 'Project Name'
+              }
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   const name = e.target.value.trim();
@@ -223,63 +175,25 @@ const Sidebar = ({ userName }) => {
                     newItem.children = [];
                   }
                   handleItemCreated(newItem);
-                  setShowCreateModal(false);
                 }
               }}
             />
-            <div className={styles.buttonGroup}>
-              <button 
-                className={styles.submitBtn} 
-                onClick={() => {
-                  const input = document.querySelector(`.${styles.modalInput}`);
-                  const name = input.value.trim();
-                  if (!name) return;
-                  const id = `${createContext.type}_${Date.now()}`;
-                  const newItem = { type: createContext.type, name, id };
-                  if (createContext.type === 'folder') {
-                    newItem.children = [];
-                  }
-                  handleItemCreated(newItem);
-                  setShowCreateModal(false);
-                }}
-              >Create</button>
-              <button className={styles.cancelBtn} onClick={() => setShowCreateModal(false)}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Rename Modal */}
-      {showRenameModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContainer}>
-            <h2>Rename</h2>
-            <input 
-              type="text" 
-              className={styles.modalInput}
-              defaultValue={renameContext.currentName} 
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  const newName = e.target.value.trim();
-                  if (!newName) return;
-                  handleRename(renameContext.id, newName);
-                  setShowRenameModal(false);
+            <button
+              className={styles.submitBtn}
+              onClick={() => {
+                const input = document.querySelector(`.${styles.modalInput}`);
+                const name = input.value.trim();
+                if (!name) return;
+                const id = `${createContext.type}_${Date.now()}`;
+                const newItem = { type: createContext.type, name, id };
+                if (createContext.type === 'folder') {
+                  newItem.children = [];
                 }
+                handleItemCreated(newItem);
               }}
-            />
-            <div className={styles.buttonGroup}>
-              <button 
-                className={styles.submitBtn} 
-                onClick={() => {
-                  const input = document.querySelector(`.${styles.modalInput}`);
-                  const newName = input.value.trim();
-                  if (!newName) return;
-                  handleRename(renameContext.id, newName);
-                  setShowRenameModal(false);
-                }}
-              >Save</button>
-              <button className={styles.cancelBtn} onClick={() => setShowRenameModal(false)}>Cancel</button>
-            </div>
+            >
+              Create
+            </button>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 // src/components/EditorToolbar.js
 
 import React from 'react';
-
+import './EditorToolbar.css'
 const EditorToolbar = ({ onSizeChange, onAddMember }) => (
 	<div id="toolbar">
 		<span className="ql-formats">
