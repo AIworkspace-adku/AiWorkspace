@@ -98,6 +98,10 @@ const TeamPage = () => {
   };
 
   const addMember = async () => {
+    if (newMemberEmail === team.owner.email) {
+      alert('You are already the owner of the team!');
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:5000/addMemberToTeam', {
         teamId,
@@ -120,17 +124,31 @@ const TeamPage = () => {
     setMembers(members.filter((m) => m !== member));
   };
 
-  const addProject = () => {
-    if (newProject.trim()) {
-      const newProjectObj = {
-        id: Date.now(),
-        name: newProject.trim(),
-        progress: 0,
-      };
-      setProjects([...projects, newProjectObj]);
-      setNewProject("");
+  const handleSubmitProject = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/createProject', {
+        projName: newProject,
+        teamId,
+        owner: owner,
+        ownerName: userName,
+        members: members,
+      },
+        {
+          withCredentials: true
+        });
+
+      if (response.data) {
+        setProjects([...projects, response.data.savedProject]);
+        setNewProject("");
+        alert('Project created successfully!');
+      } else {
+        console.log('Project not created');
+      }
     }
-  };
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong while creating project, try again.');
+    }
+  }
 
   const removeProject = (projectId) => {
     const updatedProjects = projects.filter((project) => project.id !== projectId);
@@ -222,7 +240,7 @@ const TeamPage = () => {
               placeholder="Add Project"
               className={styles.projectInput}
             />
-            <button onClick={addProject} className={styles.addButton}>
+            <button onClick={handleSubmitProject} className={styles.addButton}>
               <FaPlus /> Add
             </button>
           </div>

@@ -407,7 +407,7 @@ app.post('/createProject', async (req, res) => {
 		});
 
 		const savedProject = await newProject.save();
-		res.status(201).json({ message: 'Project created successfully' });
+		res.status(201).json({ savedProject: savedProject, message: 'Project created successfully' });
 	} catch (error) {
 		console.error('Error creating project:', error);
 		res.status(500).json({ message: 'Failed to create project' });
