@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const Document = require('./models/Document');
 const User = require('./models/User');
+const Team = require('./models/Teams');
+const Projects = require('./models/Projects');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
@@ -313,6 +315,116 @@ app.post('/logout', (req, res) => {
 	res.json({ message: 'Logout successful' });
 });
 
+app.post('/createTeam', async (req, res) => {
+	const { teamName, owner, ownerName } = req.body;
+
+	try {
+		ownerData = {
+			email: owner,
+			username: ownerName,
+		}
+		const newTeam = new Team({
+			teamName,
+			owner: ownerData,
+		});
+
+		const savedTeam = await newTeam.save();
+		res.status(201).json({ message: 'Team created successfully' });
+	} catch (error) {
+		console.error('Error creating team:', error);
+		res.status(500).json({ message: 'Failed to create team' });
+	}
+});
+
+app.post('/fetchTeams', async (req, res) => {
+	const { owner } = req.body;
+
+	try {
+		const teams = await Team.find({ 'owner.email': owner });
+		const memberTeams = await Team.find({ "members.email": owner });
+		res.json({ teams: teams, memberTeams: memberTeams });
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/getTeamById', async (req, res) => {
+	const { teamId } = req.body;
+
+	try {
+		const team = await Team.findById({ _id: teamId });
+		res.json({ team: team });
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/addMemberToTeam', async (req, res) => {
+	const { teamId, newMemberEmail } = req.body;
+
+	try {
+		const user = await User.findOne({ email: newMemberEmail });
+		if (!user) {
+			return res.status(400).json({ message: 'No such member' });
+		}
+		const team = await Team.findById({ _id: teamId });
+		if (!team) return res.status(404).json({ message: 'Team not found' });
+
+		// Check if member already exists
+		if (team.members.includes(newMemberEmail)) {
+			return res.status(400).json({ message: 'Member already added' });
+		}
+
+		const newMember = {
+			email: newMemberEmail,
+			username: user.username,
+		}
+
+		// Add the member
+		team.members.push(newMember);
+		await team.save();
+
+		res.status(200).json({ newMember: newMember, message: 'Member added successfully' });
+	} catch (error) {
+		console.error('Error adding member:', error);
+		res.status(500).json({ message: 'Error adding member', error });
+	}
+});
+
+app.post('/createProject', async (req, res) => {
+	const { projName, teamId, owner, ownerName, members } = req.body;
+	const ownerData = {
+		teamId: teamId,
+		email: owner,
+		username: ownerName,
+	}
+
+	try {
+		const newProject = new Projects({
+			projName,
+			owner: ownerData,
+			members: members,
+		});
+
+		const savedProject = await newProject.save();
+		res.status(201).json({ message: 'Project created successfully' });
+	} catch (error) {
+		console.error('Error creating project:', error);
+		res.status(500).json({ message: 'Failed to create project' });
+	}
+});
+
+app.post('/getProjByTeamId', async (req, res) => {
+	const { teamId } = req.body;
+
+	try {
+		const projects = await Projects.find({ 'owner.teamId': teamId });
+		res.json(projects);
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
 const authenticate = (req, res, next) => {
 	const token = req.cookies.session_token;
 
@@ -331,7 +443,6 @@ const authenticate = (req, res, next) => {
 
 // Example protected route
 app.post('/protected', authenticate, (req, res) => {
-	console.log('User:', req.user);
 	res.json({ username: req.user.username, email: req.user.email });
 });
 

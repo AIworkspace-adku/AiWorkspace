@@ -1,30 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "../components/dashboardpage/Sidebar"; // Consistent Sidebar import
 import styles from "./TeamPage.module.css";
-
-// Dummy data for teams
-const dummyTeams = [
-  {
-    id: "team_alpha",
-    name: "Team Santra",
-    members: ["Ayush", "krithik", "Unnati","Disha"],
-    projects: [
-      { id: "project_a", name: "Project A", progress: 50 },
-      { id: "project_b", name: "Project B", progress: 75 },
-    ],
-  },
-  {
-    id: "team_beta",
-    name: "Team Beta",
-    members: ["David", "Eve"],
-    projects: [
-      { id: "project_c", name: "Project C", progress: 30 },
-      { id: "project_d", name: "Project D", progress: 90 },
-    ],
-  },
-];
 
 const TeamPage = () => {
   const { teamId } = useParams(); // Get the team ID from the URL
@@ -32,32 +11,108 @@ const TeamPage = () => {
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [newMember, setNewMember] = useState("");
+  const [newMemberEmail, setNewMember] = useState("");
   const [newProject, setNewProject] = useState("");
 
-  // Load team data on component mount
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [owner, setOwner] = useState("");
+  const [userName, setUserName] = useState("");
+
   useEffect(() => {
-    const selectedTeam = dummyTeams.find((t) => t.id === teamId);
-    setTeam(selectedTeam);
+    // Fetch data from the protected route
+    fetch('http://localhost:5000/protected', {
+      method: 'POST',
+      credentials: 'include',
+      withCredentials: true, // Include cookies in the request
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+        setOwner(data.email);
+        setUserName(data.username);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error.message)
+      });
+  }, []);
 
-    if (selectedTeam) {
-      setTeamName(selectedTeam.name);
-      setMembers(selectedTeam.members);
-      setProjects(selectedTeam.projects);
-    }
-  }, [teamId]);
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/getTeamById', {
+          teamId,
+        });
 
-  if (!team) return <div>Loading...</div>;
+        if (response.data) {
+          console.log(response.data.team.members);
+          setTeam(response.data.team);
+          setTeamName(response.data.team.teamName);
+          setMembers(response.data.team.members);
+          // setProjects(response.data.team.projects);
+        } else {
+          console.log('No teams found');
+        }
+      } catch (error) {
+        console.log(error.response?.data?.message || 'Something went wrong, try again.');
+      }
+    };
+
+    fetchTeams();
+  }, [data, teamId]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/getProjByTeamId', {
+          teamId,
+        });
+
+        if (response.data) {
+          setProjects(response.data);
+          // setProjects(response.data.team.projects);
+        } else {
+          console.log('No teams found');
+        }
+      } catch (error) {
+        console.log(error.response?.data?.message || 'Something went wrong, try again.');
+      }
+    };
+
+    fetchProjects();
+  }, [data, teamId]);
+
+  if (!data || !team) {
+    return <div>Loading...</div>;
+  }
 
   // Handlers
   const handleTeamNameUpdate = () => {
     alert("Team name updated successfully!"); // Placeholder for backend update
   };
 
-  const addMember = () => {
-    if (newMember.trim()) {
-      setMembers([...members, newMember.trim()]);
-      setNewMember("");
+  const addMember = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/addMemberToTeam', {
+        teamId,
+        newMemberEmail,
+      });
+
+      if (response.data) {
+        alert('Member added successfully!');
+        setMembers([...members, response.data.newMember]);
+        setNewMember("");
+      } else {
+        console.log('Member not added');
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong, try again')
     }
   };
 
@@ -84,7 +139,7 @@ const TeamPage = () => {
 
   return (
     <div className={styles.teamPage}>
-      <Sidebar /> {/* Consistent Sidebar */}
+      <Sidebar userData={data} /> {/* Consistent Sidebar */}
 
       <div className={styles.content}>
         {/* Top Section: Team Name */}
@@ -100,13 +155,21 @@ const TeamPage = () => {
           </button>
         </div>
 
+        {/* Owner Section: Owner */}
+        <div className={styles.membersSection}>
+          <h3>Team Admin</h3>
+          <ul className={styles.membersList}>
+            {team.owner.username}
+          </ul>
+        </div>
+
         {/* Middle Section: Members */}
         <div className={styles.membersSection}>
           <h3>Team Members</h3>
           <ul className={styles.membersList}>
             {members.map((member, index) => (
               <li key={index} className={styles.memberItem}>
-                {member}
+                {member.username}
                 <button
                   onClick={() => removeMember(member)}
                   className={styles.removeButton}
@@ -119,7 +182,7 @@ const TeamPage = () => {
           <div className={styles.addMember}>
             <input
               type="text"
-              value={newMember}
+              value={newMemberEmail}
               onChange={(e) => setNewMember(e.target.value)}
               placeholder="Add Member"
               className={styles.memberInput}
@@ -136,12 +199,12 @@ const TeamPage = () => {
           <div className={styles.projectGrid}>
             {projects.map((project) => (
               <a
-                key={project.id}
-                href="/projects/{project.id}"
+                key={project._id}
+                href={`/projects/${project._id}`}
                 className={styles.projectCard}
                 title={`Progress: ${project.progress}%`}
               >
-                <h4>{project.name}</h4>
+                <h4>{project.projName}</h4>
                 <div className={styles.progressBar}>
                   <div
                     className={styles.progressFill}

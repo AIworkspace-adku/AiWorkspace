@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import {
     Typography,
@@ -40,6 +41,7 @@ function WelcomeScreen({ onCreateDocument, username }) {
 }
 
 function App_docs() {
+    const { projId } = useParams();
     const [documents, setDocuments] = useState([]);
     const [currentDoc, setCurrentDoc] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);

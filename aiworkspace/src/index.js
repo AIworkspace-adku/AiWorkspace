@@ -20,7 +20,7 @@ root.render(
         <Route exact path="/" element={<App />} />
         <Route exact path="/signin" element={<Signin />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/docs" element={<Docs />} />
+        <Route path="/docs/:projId" element={<Docs />} />
         <Route exact path="/whiteboard" element={<White />} />
         <Route exact path="/dashboard" element={<DashboardPage />} />
         <Route path="/teams/:teamId" element={<TeamPage />} />

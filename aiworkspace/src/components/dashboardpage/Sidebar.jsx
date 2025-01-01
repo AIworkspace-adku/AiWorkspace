@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styles from './Sidebar.module.css';
 import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus } from 'react-icons/fa';
 
-const Sidebar = () => {
-  const [yourTeams, setYourTeams] = useState([
-    {
-      type: 'folder',
-      name: 'Team Alpha',
-      id: 'team_alpha',
-      children: [
-        { type: 'file', name: 'Project A', id: 'project_a' },
-        { type: 'file', name: 'Project B', id: 'project_b' }
-      ]
-    }
-  ]);
+const Sidebar = ({ userData }) => {
+  const owner = userData.email;
+  const userName = userData.username;
+  const [yourTeams, setYourTeams] = useState([]);
 
   const [memberTeams, setMemberTeams] = useState([]); // Teams user is a member of
   const [expanded, setExpanded] = useState({ yourTeams: true, teams: true });
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createContext, setCreateContext] = useState({ parentId: null, type: 'folder' });
   const [showOptionsFor, setShowOptionsFor] = useState(null);
+  const [projMembers, setProjMembers] = useState([]);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/fetchTeams', {
+          owner,
+        });
+
+        if (response.data) {
+          console.log(response.data.teams);
+          setYourTeams(response.data.teams);
+          setMemberTeams(response.data.memberTeams);
+        } else {
+          console.log('No teams found');
+        }
+      } catch (error) {
+        console.log(error.response?.data?.message || 'Something went wrong, try again.');
+      }
+    };
+
+    fetchTeams();
+  }, []);
+
+  if (!yourTeams || !memberTeams) {
+		return <div>Loading...</div>; // Show loading message if data is still being fetched
+	}
 
   const toggleExpand = (key) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -30,10 +50,56 @@ const Sidebar = () => {
     setShowCreateModal(true);
   };
 
-  const handleCreateProject = (teamId) => {
+  const handleTeamSubmit = async(teamName) => {
+    try {
+      const response = await axios.post('http://localhost:5000/createTeam', {
+        teamName,
+        owner,
+        ownerName: userName
+      },
+      {
+        withCredentials: true
+      });
+
+      if (response.data) {
+        alert('Team created successfully!');
+      } else {
+        console.log('Team not created');
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong, try again.');
+    }
+  }
+
+  const handleCreateProject = (teamId, teamMembers) => {
+    setProjMembers(teamMembers);
     setCreateContext({ parentId: teamId, type: 'file' });
     setShowCreateModal(true);
   };
+
+  const handleSubmitProject = async(projName, teamId) => {
+    try {
+      const response = await axios.post('http://localhost:5000/createProject', {
+        projName: projName,
+        teamId,
+        owner,
+        ownerName: userName,
+        members: projMembers,
+      },
+      {
+        withCredentials: true
+      });
+
+      if (response.data) {
+        alert('Project created successfully!');
+      } else {
+        console.log('Project not created');
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong while creating project, try again.');
+    }
+  }
 
   const handleItemCreated = (newItem) => {
     if (createContext.parentId === null) {
@@ -64,26 +130,27 @@ const Sidebar = () => {
   );
 
   const renderTeam = (team) => {
-    const isTeamExpanded = expanded[team.id] !== false;
+    console.log(team);
+    const isTeamExpanded = expanded[team._id] !== false;
 
     return (
       <div className={styles.nodeContainer} key={team.id}>
         <div className={styles.nodeHeader}>
           <a
-            href={`/teams/${team.id}`} // Use href for navigation
+            href={`/teams/${team._id}`} // Use href for navigation
             className={styles.nodeInfo}
           >
             {isTeamExpanded ? <FaFolderOpen /> : <FaFolder />}
-            <span className={styles.nodeName}>{team.name}</span>
+            <span className={styles.nodeName}>{team.teamName}</span>
           </a>
-          <button className={styles.optionsBtn} onClick={() => setShowOptionsFor(team.id)}>
+          <button className={styles.optionsBtn} onClick={() => setShowOptionsFor(team._id)}>
             <FaEllipsisH />
           </button>
-          {showOptionsFor === team.id && (
+          {showOptionsFor === team._id && (
             <div className={styles.optionsMenu}>
               <div
                 className={styles.optionsMenuItem}
-                onClick={() => handleCreateProject(team.id)}
+                onClick={() => handleCreateProject(team._id, team.members)}
               >
                 Add Project
               </div>
@@ -114,7 +181,7 @@ const Sidebar = () => {
         </div>
         {expanded.yourTeams && (
           <div className={styles.children}>
-            {yourTeams.map(renderTeam)}
+            {yourTeams.map((team) => renderTeam(team))}
           </div>
         )}
       </div>
@@ -129,7 +196,7 @@ const Sidebar = () => {
         </div>
         {expanded.teams && memberTeams.length > 0 && (
           <div className={styles.children}>
-            {memberTeams.map(renderTeam)}
+            {memberTeams.map((team) => renderTeam(team))}
           </div>
         )}
       </div>
@@ -173,6 +240,10 @@ const Sidebar = () => {
                   const newItem = { type: createContext.type, name, id };
                   if (createContext.type === 'folder') {
                     newItem.children = [];
+                    handleTeamSubmit(name);
+                  }
+                  else {
+                    handleSubmitProject(name, createContext.parentId);
                   }
                   handleItemCreated(newItem);
                 }
@@ -188,6 +259,10 @@ const Sidebar = () => {
                 const newItem = { type: createContext.type, name, id };
                 if (createContext.type === 'folder') {
                   newItem.children = [];
+                  handleTeamSubmit(name);
+                }
+                else {
+                  handleSubmitProject(name, createContext.parentId);
                 }
                 handleItemCreated(newItem);
               }}

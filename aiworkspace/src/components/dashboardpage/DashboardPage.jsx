@@ -10,7 +10,6 @@ const DashboardPage = () => {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		console.log("Hi there");
 		// Fetch data from the protected route
 		fetch('http://localhost:5000/protected', {
 			method: 'POST',
@@ -39,7 +38,7 @@ const DashboardPage = () => {
 
 	return (
 		<div className={styles.dashboardContainer}>
-			<Sidebar userName={data.username} />
+			<Sidebar userData={data} />
 			<MainContent userName={data.username} />
 		</div>
 	);
