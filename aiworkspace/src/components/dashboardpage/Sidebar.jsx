@@ -23,7 +23,6 @@ const Sidebar = ({ userData }) => {
         });
 
         if (response.data) {
-          console.log(response.data.teams);
           setYourTeams(response.data.teams);
           setMemberTeams(response.data.memberTeams);
         } else {
@@ -130,7 +129,6 @@ const Sidebar = ({ userData }) => {
   );
 
   const renderTeam = (team) => {
-    console.log(team);
     const isTeamExpanded = expanded[team._id] !== false;
 
     return (

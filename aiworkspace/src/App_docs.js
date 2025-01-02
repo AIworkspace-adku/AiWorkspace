@@ -40,8 +40,9 @@ function WelcomeScreen({ onCreateDocument, username }) {
     );
 }
 
-function App_docs() {
-    const { projId } = useParams();
+function App_docs(projId) {
+    const projectId = projId.projId;
+    const [projects, setProjects] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [currentDoc, setCurrentDoc] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -54,6 +55,7 @@ function App_docs() {
     // Fetch user data and documents
     useEffect(() => {
         fetchUserData();
+        fetchProjData();
     }, []);
 
     const fetchUserData = async () => {
@@ -76,9 +78,27 @@ function App_docs() {
         }
     };
 
+    const fetchProjData = async () => {
+        try {
+            const response = await axios.post('http://localhost:5000/getProjByProjId', {
+                projId: projectId,
+            });
+
+            if (response.data) {
+                console.log(response.data);
+                setProjects(response.data);
+                // setProjects(response.data.team.projects);
+            } else {
+                console.log('No teams found');
+            }
+        } catch (error) {
+            console.log(error.response?.data?.message || 'Something went wrong, try again.');
+        }
+    };
+
     const fetchDocuments = async (owner) => {
         try {
-            const response = await axios.post('http://localhost:5000/fetchDocuments', { owner });
+            const response = await axios.post('http://localhost:5000/fetchDocuments', { projId: projectId });
             setDocuments(response.data);
         } catch (error) {
             console.error('Error fetching documents:', error);
@@ -88,9 +108,15 @@ function App_docs() {
     // Create a new document
     const handleCreateDocument = async () => {
         try {
+            const ownerData = {
+                projId: projectId,
+                email: data.email,
+                username: data.username,
+            }
             const response = await axios.post('http://localhost:5000/documents', {
                 title: newDocTitle || 'Untitled Document',
-                owner: data.email,
+                owner: ownerData,
+                members: projects.members,
                 content: '',
             });
 

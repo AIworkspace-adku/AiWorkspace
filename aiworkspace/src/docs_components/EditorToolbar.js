@@ -13,7 +13,7 @@ const EditorToolbar = ({ onSizeChange, onAddMember }) => (
 				<option value="helvetica">Helvetica</option>
 				<option value="lucida">Lucida</option>
 			</select>
-			<select className="ql-size" defaultValue="medium">
+			<select className="ql-size" defaultValue="large">
 				<option value="extra-small">Size 1</option>
 				<option value="small">Size 2</option>
 				<option value="medium">Size 3</option>

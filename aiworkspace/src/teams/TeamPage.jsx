@@ -51,7 +51,6 @@ const TeamPage = () => {
         });
 
         if (response.data) {
-          console.log(response.data.team.members);
           setTeam(response.data.team);
           setTeamName(response.data.team.teamName);
           setMembers(response.data.team.members);

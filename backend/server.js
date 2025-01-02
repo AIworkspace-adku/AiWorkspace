@@ -162,13 +162,8 @@ app.post('/documents', async (req, res) => {
 // post all documents
 app.post('/fetchDocuments', async (req, res) => {
 	try {
-		const { owner } = req.body;
-		const documents = await Document.find({
-			$or: [
-				{ owner: owner },        // Check if the user is the owner
-				{ members: owner },      // Check if the user is in the members list
-			],
-		});
+		const { projId } = req.body;
+		const documents = await Document.find({ 'owner.projId': projId });
 		res.json(documents);
 	} catch (error) {
 		res.status(500).send(error);
@@ -419,6 +414,17 @@ app.post('/getProjByTeamId', async (req, res) => {
 
 	try {
 		const projects = await Projects.find({ 'owner.teamId': teamId });
+		res.json(projects);
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/getProjByProjId', async (req, res) => {
+	const { projId } = req.body;
+
+	try {
+		const projects = await Projects.findById({ _id: projId });
 		res.json(projects);
 	} catch (error) {
 		res.status(500).send(error);

@@ -9,7 +9,7 @@ import Gpt from "../chatGpt/Gpt"; // Dummy GPT component
 import styles from "./ProjectPage.module.css";
 
 const ProjectPage = () => {
-  const { projId } = useParams();
+  const { projectId } = useParams();
   const [activeTab, setActiveTab] = useState("task"); // Default tab: Task
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -36,18 +36,18 @@ const ProjectPage = () => {
       });
   }, []);
 
-  if (!data) {
+  if (!data || !projectId) {
     return <div>Loading...</div>; // Show loading message if data is still being fetched
   }
 
   const renderActiveComponent = () => {
     switch (activeTab) {
       case "task":
-        return <TaskTracker projId={projId} />;
+        return <TaskTracker projId={projectId} />;
       case "planning":
         return <GanttChart />;
       case "documentation":
-        return <Docs projId={projId} />;
+        return <Docs projId={projectId} />;
       case "gpt":
         return <Gpt />;
       default:
