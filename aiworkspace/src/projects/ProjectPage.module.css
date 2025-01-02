@@ -1,89 +1,121 @@
 /* General Layout */
 .projectPage {
-    display: flex;
-    background: #1e1e1e; /* Dark theme */
-    color: #eaeaea;
-    height: 100vh;
-  }
-  
-  /* Main Content Layout */
-  .mainContent {
-    flex: 1;
-    padding: 2rem;
-    position: relative;
-    overflow-y: auto;
-  }
-  
-  /* Top Right Buttons */
-  .topRightButtons {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .chatButton,
-  .videoCallButton {
-    background: #444;
-    color: #fff;
-    font-size: 1.4rem;
-    padding: 0.8rem 1.5rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 0.2s, background 0.3s;
-  }
-  
-  .chatButton:hover,
-  .videoCallButton:hover {
-    transform: translateY(-2px);
-    background: #4caf50;
-  }
-  
-  /* Floating Navbar */
-  .floatingNavbar {
-    position: fixed;
-    left: 50%;
-    top: 4rem;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 2rem;
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    padding: 1rem 2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-  }
-  
-  .navButton {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #eaeaea;
-    font-size: 1.6rem;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
-  }
-  
-  .navButton:hover {
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .active {
-    background: rgba(75, 101, 215, 0.6);
-    color: #fff;
-  }
-  
-  /* Page Content */
-  .pageContent {
-    margin-top: 8rem; /* Ensure space below floating navbar */
-    font-size: 1.8rem;
-    text-align: center;
-  }
-  
+  display: flex;
+  background: #1e1e1e; /* Dark theme */
+  color: #eaeaea;
+  height: 100vh;
+}
+
+/* Main Content Layout */
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  position: relative;
+  overflow-y: auto;
+}
+
+/* Top Right Buttons */
+.topRightButtons {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.chatButton,
+.videoCallButton {
+  background: #444;
+  color: #fff;
+  font-size: 1.4rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.chatButton:hover,
+.videoCallButton:hover {
+  transform: translateY(-2px);
+  background: #4caf50;
+}
+
+/* Floating Navbar */
+.floatingNavbar {
+  position: fixed;
+  left: 50%;
+  top: 4rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #eaeaea;
+  font-size: 1.6rem;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.navButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(75, 101, 215, 0.8), rgba(255, 255, 255, 0.2));
+  z-index: 0;
+  transition: left 0.3s ease;
+}
+
+.navButton:hover::before {
+  left: 0;
+}
+
+.navButton:hover {
+  transform: scale(1.1);
+  color: #fff;
+  background: rgba(75, 101, 215, 0.3);
+}
+
+.navButton span {
+  position: relative;
+  z-index: 1; /* Ensures text is above the hover effect */
+}
+
+.active {
+  background: linear-gradient(90deg, rgba(75, 101, 215, 0.8), rgba(0, 151, 230, 0.8));
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(75, 101, 215, 0.5);
+  transform: translateY(-2px) scale(1.05);
+  transition: all 0.3s ease-in-out;
+}
+
+.active:hover {
+  background: linear-gradient(90deg, rgba(75, 101, 215, 1), rgba(0, 151, 230, 1));
+  box-shadow: 0 6px 14px rgba(75, 101, 215, 0.8);
+}
+
+/* Page Content */
+.pageContent {
+  margin-top: 8rem; /* Ensure space below floating navbar */
+  font-size: 1.8rem;
+  text-align: center;
+}

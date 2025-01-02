@@ -11,7 +11,7 @@ import DashboardPage from './components/dashboardpage/DashboardPage';
 import TeamPage from '../src/teams/TeamPage';
 import GanttChart from '../src/projects/GanttChart';
 import ProjectPage from '../src/projects/ProjectPage';
-
+import TaskTracker from '../src/Tasks/TaskTracker';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -26,6 +26,7 @@ root.render(
         <Route path="/teams/:teamId" element={<TeamPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />
         <Route path="/planning" element={<GanttChart />} />
+        <Route path="/tasktracker" element={<TaskTracker />} />
       </Routes>
     </Router>
 

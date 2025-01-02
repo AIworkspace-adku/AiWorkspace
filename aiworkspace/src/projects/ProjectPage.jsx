@@ -2,34 +2,37 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaComments, FaVideo, FaTasks, FaFileAlt, FaLightbulb, FaRobot } from "react-icons/fa";
 import Sidebar from "../components/dashboardpage/Sidebar"; // Ensure Sidebar is consistent
+import TaskTracker from "../Tasks/TaskTracker"; // Import your task tracker component
+import GanttChart from "../projects/GanttChart"; // Dummy planning component
+import Docs from "../App_docs"; // Dummy documentation component
+import Gpt from "../chatGpt/Gpt"; // Dummy GPT component
 import styles from "./ProjectPage.module.css";
 
 const ProjectPage = () => {
   const { projId } = useParams();
-  console.log(projId);
+  const [activeTab, setActiveTab] = useState("task"); // Default tab: Task
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     // Fetch data from the protected route
-    fetch('http://localhost:5000/protected', {
-      method: 'POST',
-      credentials: 'include',
+    fetch("http://localhost:5000/protected", {
+      method: "POST",
+      credentials: "include",
       withCredentials: true, // Include cookies in the request
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error("Failed to fetch data");
         }
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setData(data);
       })
       .catch((error) => {
         console.log(error);
-        setError(error.message)
+        setError(error.message);
       });
   }, []);
 
@@ -37,10 +40,25 @@ const ProjectPage = () => {
     return <div>Loading...</div>; // Show loading message if data is still being fetched
   }
 
+  const renderActiveComponent = () => {
+    switch (activeTab) {
+      case "task":
+        return <TaskTracker projId={projId} />;
+      case "planning":
+        return <GanttChart />;
+      case "documentation":
+        return <Docs projId={projId} />;
+      case "gpt":
+        return <Gpt />;
+      default:
+        return <div>Select an option from the navbar</div>;
+    }
+  };
+
   return (
     <div className={styles.projectPage}>
       {/* Sidebar */}
-      <Sidebar userData = {data} />
+      <Sidebar userData={data} />
 
       {/* Main Content */}
       <div className={styles.mainContent}>
@@ -56,24 +74,42 @@ const ProjectPage = () => {
 
         {/* Floating Navbar */}
         <div className={styles.floatingNavbar}>
-          <a href="#" className={`${styles.navButton} ${styles.active}`}>
+          <button
+            className={`${styles.navButton} ${
+              activeTab === "task" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("task")}
+          >
             <FaTasks /> Task
-          </a>
-          <a href="/planning" className={styles.navButton}>
+          </button>
+          <button
+            className={`${styles.navButton} ${
+              activeTab === "planning" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("planning")}
+          >
             <FaLightbulb /> Planning
-          </a>
-          <a href={`/docs/${projId}`} className={styles.navButton}>
+          </button>
+          <button
+            className={`${styles.navButton} ${
+              activeTab === "documentation" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("documentation")}
+          >
             <FaFileAlt /> Documentation
-          </a>
-          <a href="#" className={styles.navButton}>
+          </button>
+          <button
+            className={`${styles.navButton} ${
+              activeTab === "gpt" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("gpt")}
+          >
             <FaRobot /> GPT
-          </a>
+          </button>
         </div>
 
-        {/* Placeholder for Page Content */}
-        <div className={styles.pageContent}>
-
-        </div>
+        {/* Dynamic Page Content */}
+        <div className={styles.pageContent}>{renderActiveComponent()}</div>
       </div>
     </div>
   );
