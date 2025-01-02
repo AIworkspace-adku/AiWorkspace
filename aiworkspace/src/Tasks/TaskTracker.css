@@ -1,8 +1,8 @@
 /* General Styles */
 .task-tracker {
     padding: 20px;
-    background: #1e1e1e url("data:image/svg+xml,%3Csvg width='10' height='10' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23cccccc'/%3E%3C/svg%3E") repeat;
-    color: #0c0909;
+    background: #3d3c3c url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='3' cy='3' r='1' fill='%23a0a0a0'/%3E%3C/svg%3E") repeat;
+  color: #eaeaea;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -30,7 +30,7 @@
   .module-task-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    gap: 50px;
     justify-items: center;
   }
   
@@ -290,16 +290,8 @@
     transform: scale(1.05);
   }
   
-  /* Arrow Connector */
-  .arrow {
-    position: absolute;
-    top: 50%;
-    width: 60px;
-    height: 2px;
-    background: white;
-    transform: translateY(-50%);
-    z-index: 1;
-  }
+  
+  
   
   .arrow-right {
     left: 100%;
