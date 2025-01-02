@@ -8,28 +8,28 @@ const TaskTracker = () => {
       id: 1,
       title: "Module 1",
       tasks: [
-        { id: 101, title: "Complete UI Mockups", assignedTo: ["John Doe"], done: false },
-        { id: 102, title: "Fix Navbar Bug", assignedTo: ["Jane Smith"], done: false },
+        { id: 101, title: "Complete UI Mockups", assignedTo: ["Ayush Pani"], done: false },
+        { id: 102, title: "Fix Navbar Bug", assignedTo: ["Krithik Pats"], done: false },
       ],
-      assignedTo: ["Alice Brown"],
+      assignedTo: ["Krithik Pats","Ayush Pani"]
     },
     {
       id: 2,
       title: "Module 2",
       tasks: [],
-      assignedTo: ["Bob Marley"],
+      assignedTo: ["Disha Poojary"],
     },
   ]);
 
-  const [teamMembers] = useState(["John Doe", "Jane Smith", "Alice Brown", "Bob Marley"]);
+  const [teamMembers] = useState([" Ayush Pani", "Krithik Pats", "Disha Poojary", "Unnati Pohankar"]);
   const [newModule, setNewModule] = useState({ title: "", assignedTo: [] });
   const [showAddModule, setShowAddModule] = useState(false);
   const [showAddTask, setShowAddTask] = useState(null);
   const [newTask, setNewTask] = useState({ title: "", assignedTo: [] });
 
-  // Calculate progress and bullet color dynamically
+  
   const getProgress = (tasks) => {
-    if (!tasks || tasks.length === 0) return 0; // No tasks
+    if (!tasks || tasks.length === 0) return 0; 
     const completed = tasks.filter((task) => task.done).length;
     return Math.round((completed / tasks.length) * 100);
   };
