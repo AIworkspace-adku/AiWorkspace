@@ -22,10 +22,6 @@ const projSchema = new mongoose.Schema({
             type: String,
         }
     },
-    members: [{
-        email: { type: String, required: true },
-        username: { type: String, required: true }
-    }],
     creationDate: {
         type: Date,
         default: Date.now

@@ -398,7 +398,6 @@ app.post('/createProject', async (req, res) => {
 		const newProject = new Projects({
 			projName,
 			owner: ownerData,
-			members: members,
 		});
 
 		const savedProject = await newProject.save();
@@ -430,6 +429,24 @@ app.post('/getProjByProjId', async (req, res) => {
 		res.status(500).send(error);
 	}
 });
+
+app.post('/removeMemberFromTeam', async (req, res) => {
+	const { teamId, memberEmail } = req.body;
+
+	try {
+		const team = await Team.findByIdAndUpdate(
+			{ _id: teamId },
+			{ $pull: { members: { email: memberEmail } } }
+		);
+		if (!team) return res.status(404).json({ message: 'Team not found' });
+
+		return res.status(200).json({ message: 'Member removed successfully' });
+	}
+	catch (error) {
+		console.error('Error removing member:', error);
+		res.status(500).json({ message: 'Error removing member', error });
+	}
+});	
 
 const authenticate = (req, res, next) => {
 	const token = req.cookies.session_token;
