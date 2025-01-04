@@ -15,10 +15,6 @@ const DocumentSchema = new mongoose.Schema({
 		}
 	},
 	content: { type: mongoose.Schema.Types.Mixed, default: {} }, // Quill Delta format
-	members: [{
-		email: { type: String, required: true },
-		username: { type: String, required: true }
-	}],
 	lastModified: { type: Date, default: Date.now }, // Timestamp of the last modification
 	lastEditedBy: {
 		user: { type: String }, // Username or email of the editor

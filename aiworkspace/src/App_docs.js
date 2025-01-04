@@ -43,6 +43,7 @@ function WelcomeScreen({ onCreateDocument, username }) {
 function App_docs(projId) {
     const projectId = projId.projId;
     const [projects, setProjects] = useState([]);
+    const [teamId, setTeamId] = useState('');
     const [documents, setDocuments] = useState([]);
     const [currentDoc, setCurrentDoc] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -85,7 +86,8 @@ function App_docs(projId) {
             });
 
             if (response.data) {
-                console.log(response.data);
+                console.log(response.data.owner.teamId);
+                setTeamId(response.data.owner.teamId);
                 setProjects(response.data);
                 // setProjects(response.data.team.projects);
             } else {
@@ -116,7 +118,6 @@ function App_docs(projId) {
             const response = await axios.post('http://localhost:5000/documents', {
                 title: newDocTitle || 'Untitled Document',
                 owner: ownerData,
-                members: projects.members,
                 content: '',
             });
 

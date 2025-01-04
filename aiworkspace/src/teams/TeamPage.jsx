@@ -120,6 +120,23 @@ const TeamPage = () => {
   };
 
   const removeMember = (member) => {
+
+    try {
+      const response = axios.post('http://localhost:5000/removeMemberFromTeam', {
+        teamId,
+        memberEmail: member.email,
+      });
+
+      if (response) {
+        alert('Member removed successfully!');
+      } else {
+        console.log('Member not removed');
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong while removing member, try again');
+    }
+
     setMembers(members.filter((m) => m !== member));
   };
 
@@ -130,7 +147,6 @@ const TeamPage = () => {
         teamId,
         owner: owner,
         ownerName: userName,
-        members: members,
       },
         {
           withCredentials: true
