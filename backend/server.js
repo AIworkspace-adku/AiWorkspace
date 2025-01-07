@@ -8,6 +8,8 @@ const Document = require('./models/Document');
 const User = require('./models/User');
 const Team = require('./models/Teams');
 const Projects = require('./models/Projects');
+const Modules = require('./models/Modules');
+const Tasks = require('./models/Tasks');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
@@ -43,74 +45,74 @@ mongoose.connect(process.env.MONGO_URI, {
 	.then(() => console.log('MongoDB connected'))
 	.catch(err => console.error('MongoDB connection error:', err));
 
-	io.on('connection', (socket) => {
-		console.log('New client connected');
-		const usersByDocument = {};
-	
-		socket.on('join-document', async (documentId) => {
-			socket.join(documentId);
-			if (!usersByDocument[documentId]) {
-				usersByDocument[documentId] = {};
+io.on('connection', (socket) => {
+	console.log('New client connected');
+	const usersByDocument = {};
+
+	socket.on('join-document', async (documentId) => {
+		socket.join(documentId);
+		if (!usersByDocument[documentId]) {
+			usersByDocument[documentId] = {};
+		}
+		usersByDocument[documentId][socket.id] = { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` };
+		console.log(`Client joined room: ${documentId}`);
+
+		try {
+			let document = await Document.findById(documentId);
+			if (!document) {
+				document = new Document({ _id: documentId, content: [] });
+				await document.save();
 			}
-			usersByDocument[documentId][socket.id] = { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` };
-			console.log(`Client joined room: ${documentId}`);
-	
-			try {
-				let document = await Document.findById(documentId);
-				if (!document) {
-					document = new Document({ _id: documentId, content: [] });
-					await document.save();
-				}
-				socket.emit('document-update', document.content); // Send initial content
-			} catch (error) {
-				console.error('Error joining document:', error);
-			}
-		});
-	
-		socket.on('document-change', async ({ _id, delta }) => {
-			try {
-				console.log(`Broadcasting changes for document ID: ${_id}`);
-				// Broadcast changes to other clients
-				socket.to(_id).emit('document-update', delta);
-			} catch (error) {
-				console.error('Error broadcasting document changes:', error);
-			}
-		});
-	
-		socket.on('cursor-move', ({ documentId, range, color, name }) => {
-			socket.to(documentId).emit('cursor-update', {
-				userId: socket.id,
-				range,
-				color,
-				name,
-			});
-		});
-	
-		socket.on('disconnect', () => {
-			console.log('Client disconnected');
-			for (const documentId in usersByDocument) {
-				delete usersByDocument[documentId][socket.id];
-			}
+			socket.emit('document-update', document.content); // Send initial content
+		} catch (error) {
+			console.error('Error joining document:', error);
+		}
+	});
+
+	socket.on('document-change', async ({ _id, delta }) => {
+		try {
+			console.log(`Broadcasting changes for document ID: ${_id}`);
+			// Broadcast changes to other clients
+			socket.to(_id).emit('document-update', delta);
+		} catch (error) {
+			console.error('Error broadcasting document changes:', error);
+		}
+	});
+
+	socket.on('cursor-move', ({ documentId, range, color, name }) => {
+		socket.to(documentId).emit('cursor-update', {
+			userId: socket.id,
+			range,
+			color,
+			name,
 		});
 	});
 
-	app.post('/saveDocument', async (req, res) => {
-		const { documentId, content } = req.body;
-	
-		try {
-			// Find the document by ID and update its content
-			const document = await Document.findByIdAndUpdate(
-				documentId,
-				{ content, lastModified: new Date() },
-				{ new: true, upsert: true } // Create document if it doesn't exist
-			);
-	
-			res.status(200).json({ message: 'Document saved successfully', document });
-		} catch (error) {
-			console.error('Error saving document:', error);
-			res.status(500).json({ message: 'Error saving document', error });
+	socket.on('disconnect', () => {
+		console.log('Client disconnected');
+		for (const documentId in usersByDocument) {
+			delete usersByDocument[documentId][socket.id];
 		}
 	});
+});
+
+app.post('/saveDocument', async (req, res) => {
+	const { documentId, content } = req.body;
+
+	try {
+		// Find the document by ID and update its content
+		const document = await Document.findByIdAndUpdate(
+			documentId,
+			{ content, lastModified: new Date() },
+			{ new: true, upsert: true } // Create document if it doesn't exist
+		);
+
+		res.status(200).json({ message: 'Document saved successfully', document });
+	} catch (error) {
+		console.error('Error saving document:', error);
+		res.status(500).json({ message: 'Error saving document', error });
+	}
+});
 
 app.post('/gemini-query', async (req, res) => {
 	const { query } = req.body;
@@ -124,7 +126,7 @@ app.post('/gemini-query', async (req, res) => {
 		const result = await model.generateContent(prompt);
 
 		console.log("Full response from Gemini API:", result);
-        const suggestions = result.response.text()
+		const suggestions = result.response.text()
 
 		res.status(200).json({ suggestions });
 	} catch (error) {
@@ -446,7 +448,82 @@ app.post('/removeMemberFromTeam', async (req, res) => {
 		console.error('Error removing member:', error);
 		res.status(500).json({ message: 'Error removing member', error });
 	}
-});	
+});
+
+app.post('/fetchMembersUsingProjId', async (req, res) => {
+	const { projId } = req.body;
+
+	try {
+		const project = await Projects.findById({ _id: projId });
+		if (!project) return res.status(404).json({ message: 'Project not found' });
+
+		const team = await Team.findById({ _id: project.owner.teamId });
+		const members = team.members;
+		members.push(project.owner);
+		res.status(200).json({ members: members });
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/addModule', async (req, res) => {
+	const { moduleName, projId, assignedTo } = req.body;
+
+	try {
+		const newModule = new Modules({
+			moduleName: moduleName,
+			projId: projId,
+			assignedTo: assignedTo,
+		});
+
+		const savedModule = await newModule.save();
+		res.status(201).json({ modules: savedModule, message: 'Module created successfully' });
+	}
+	catch (error) {
+		console.error('Error creating module:', error);
+		res.status(500).json({ message: 'Failed to create module' });
+	}
+});
+
+app.post('/fetchModules', async (req, res) => {
+	const { projId } = req.body;
+
+	try {
+		const modules = await Modules.find({ projId: projId });
+		res.status(201).json({ modules: modules, message: 'Module created successfully' });
+	}
+	catch (error) {
+		console.error('Error creating module:', error);
+		res.status(500).json({ message: 'Failed to create module' });
+	}
+});
+
+app.post('/addTask', async (req, res) => {
+	const { moduleId, projId, taskName, assignedTo } = req.body;
+
+	try {
+		const ownerData = {
+			projId: projId,
+			moduleId: moduleId,
+		}
+		const newTask = {
+			taskName: taskName,
+			owner: ownerData,
+			assignedTo: assignedTo,
+		};
+
+		const module = await Modules.findById(moduleId);
+		module.tasks.push(newTask);
+		await module.save();
+
+		const savedTask = module.tasks[module.tasks.length - 1];
+		res.status(201).json({ savedTask: savedTask, message: 'Task created successfully' });
+	}
+	catch (error) {
+		console.error('Error creating task:', error);
+		res.status(500).json({ message: 'Failed to create task' });
+	}
+});
 
 const authenticate = (req, res, next) => {
 	const token = req.cookies.session_token;
