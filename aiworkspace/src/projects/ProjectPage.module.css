@@ -46,7 +46,7 @@
 .floatingNavbar {
   position: fixed;
   left: 50%;
-  top: 4rem;
+  top: 1rem;
   transform: translateX(-50%);
   display: flex;
   gap: 2rem;
