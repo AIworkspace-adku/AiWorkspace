@@ -13,6 +13,7 @@ import GanttChart from '../src/projects/GanttChart';
 import ProjectPage from '../src/projects/ProjectPage';
 import TaskTracker from '../src/Tasks/TaskTracker';
 import Profile from '../src/profile/Profile';
+import SessionTimeout from './session/SessionTimeout';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ root.render(
         <Route path="/planning" element={<GanttChart />} />
         <Route path="/tasktracker" element={<TaskTracker />} />
         <Route path="/profile" element={<Profile />} />
+        <Route exact path="/session-timeout" element={<SessionTimeout />} />
       </Routes>
     </Router>
 

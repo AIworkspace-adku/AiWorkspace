@@ -48,12 +48,7 @@ const Hero = ({ data }) => {
 
                 {/* Right Section */}
                 <div className="land-right">
-                    <div className="image-card-container">
-                        <div className="image-card">
-                            <img src={rightBg} alt="Background" />
-                            <div className="sparkles-container"></div>
-                        </div>
-                    </div>
+                <div className="sparkles-container"></div>
                 </div>
             </Split>
         </div>
