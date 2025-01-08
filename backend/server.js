@@ -436,7 +436,7 @@ app.post('/removeMemberFromTeam', async (req, res) => {
 	const { teamId, memberEmail } = req.body;
 
 	try {
-		const team = await Team.findByIdAndUpdate(
+		const team = await Team.updateOne(
 			{ _id: teamId },
 			{ $pull: { members: { email: memberEmail } } }
 		);
@@ -460,18 +460,19 @@ app.post('/fetchMembersUsingProjId', async (req, res) => {
 		const team = await Team.findById({ _id: project.owner.teamId });
 		const members = team.members;
 		members.push(project.owner);
-		res.status(200).json({ members: members, owner: project.owner });
+		res.status(200).json({ members: members, owner: project.owner, teamId: project.owner.teamId });
 	} catch (error) {
 		res.status(500).send(error);
 	}
 });
 
 app.post('/addModule', async (req, res) => {
-	const { moduleName, projId, assignedTo } = req.body;
+	const { teamId, projId, moduleName, assignedTo } = req.body;
 
 	try {
 		const newModule = new Modules({
 			moduleName: moduleName,
+			teamId: teamId,
 			projId: projId,
 			assignedTo: assignedTo,
 		});

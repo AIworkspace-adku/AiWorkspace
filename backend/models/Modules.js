@@ -9,6 +9,10 @@ const moduleSchema = new mongoose.Schema({
         trim: true,
         maxlength: 30
     },
+    teamId: {
+        type: String,
+        required: true,
+    },
     projId: {
         type: String,
         required: true,

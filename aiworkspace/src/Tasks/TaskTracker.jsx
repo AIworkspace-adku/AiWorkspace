@@ -7,6 +7,7 @@ const TaskTracker = ({ projId, userData }) => {
     const projectId = projId;
     const [modules, setModules] = useState([]);
     const [teamOwner, setTeamOwner] = useState(null);
+    const [teamId, setTeamId] = useState("");
     const [teamMembers, setTeamMembers] = useState([]);
     const [newModule, setNewModule] = useState("");
     const [assignedTo, setAssignedTo] = useState([]);
@@ -29,6 +30,7 @@ const TaskTracker = ({ projId, userData }) => {
             })
 
             if (response.data.members) {
+                setTeamId(response.data.teamId);
                 setTeamMembers(response.data.members);
                 setTeamOwner(response.data.owner);
             }
@@ -80,6 +82,7 @@ const TaskTracker = ({ projId, userData }) => {
         if (!newModule.trim()) return;
         try {
             const response = await axios.post("http://localhost:5000/addModule", {
+                teamId: teamId,
                 projId: projectId,
                 moduleName: newModule,
                 assignedTo: assignedTo,
