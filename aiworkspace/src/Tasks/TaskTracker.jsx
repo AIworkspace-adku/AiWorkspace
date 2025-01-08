@@ -3,10 +3,10 @@ import axios from "axios";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import "./TaskTracker.css";
 
-const TaskTracker = (projId) => {
-    const projectId = projId.projId;
+const TaskTracker = ({ projId, userData }) => {
+    const projectId = projId;
     const [modules, setModules] = useState([]);
-
+    const [teamOwner, setTeamOwner] = useState(null);
     const [teamMembers, setTeamMembers] = useState([]);
     const [newModule, setNewModule] = useState("");
     const [assignedTo, setAssignedTo] = useState([]);
@@ -30,6 +30,7 @@ const TaskTracker = (projId) => {
 
             if (response.data.members) {
                 setTeamMembers(response.data.members);
+                setTeamOwner(response.data.owner);
             }
             else {
                 console.log("No members found");
@@ -50,7 +51,7 @@ const TaskTracker = (projId) => {
                 setModules(response.data.modules);
             }
             else {
-                console.log("No members found");
+                console.log("No modules found");
             }
         }
         catch (error) {
@@ -58,13 +59,13 @@ const TaskTracker = (projId) => {
         }
     }
 
-    if (!teamMembers) {
+    if (!teamMembers || !modules || !teamOwner) {
         return <div>Loading...</div>;
     }
 
     const getProgress = (tasks) => {
         if (!tasks || tasks.length === 0) return 0;
-        const completed = tasks.filter((task) => task.done).length;
+        const completed = tasks.filter((task) => task.status).length;
         return Math.round((completed / tasks.length) * 100);
     };
 
@@ -85,7 +86,7 @@ const TaskTracker = (projId) => {
             })
 
             if (response.data.modules) {
-                setModules(...modules, response.data.modules);
+                setModules([...modules, response.data.modules]);
                 setNewModule("");
                 setAssignedTo([]);
                 setShowAddModule(false);
@@ -117,7 +118,7 @@ const TaskTracker = (projId) => {
                             ? {
                                 ...module,
                                 tasks: [
-                                    ...module.tasks, 
+                                    ...module.tasks,
                                     response.data.savedTask
                                 ],
                             }
@@ -137,40 +138,125 @@ const TaskTracker = (projId) => {
         }
     };
 
-    const handleUpdateModule = (moduleId) => {
-        setModules(
-            modules.map((module) =>
-                module.id === moduleId
-                    ? { ...module, title: newModule.title, assignedTo: newModule.assignedTo }
-                    : module
-            )
-        );
-        setShowUpdateModule(null);
+    const handleUpdateModule = async (moduleId) => {
+        try {
+            const response = await axios.post("http://localhost:5000/updateModule", {
+                moduleId: moduleId,
+                moduleName: newModule,
+                assignedTo: assignedTo,
+            })
+
+            if (response.data.updatedModule) {
+                setModules(
+                    modules.map((module) =>
+                        module._id === moduleId
+                            ? response.data.updatedModule
+                            : module
+                    )
+                );
+                setNewModule("");
+                setAssignedTo([]);
+                setShowUpdateModule(null);
+            }
+            else {
+                console.log("No modules found");
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
     };
 
-    const handleUpdateTask = (moduleId, taskId) => {
-        setModules(
-            modules.map((module) =>
-                module.id === moduleId
-                    ? {
-                        ...module,
-                        tasks: module.tasks.map((task) =>
-                            task.id === taskId
-                                ? { ...task, title: newTask.title, assignedTo: newTask.assignedTo }
-                                : task
-                        ),
-                    }
-                    : module
-            )
-        );
-        setShowUpdateTask(null);
+    const handleDeleteModule = async (moduleId) => {
+        try {
+            const response = await axios.post("http://localhost:5000/deleteModule", {
+                moduleId: moduleId,
+            })
+            if (response.data.deletedModule) {
+                setModules(modules.filter((module) => module._id !== moduleId));
+            }
+            else {
+                console.log("No modules found");
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleUpdateTask = async (moduleId, taskId, status, statusUpdate) => {
+        console.log(moduleId);
+        try {
+            const response = await axios.post("http://localhost:5000/updateTask", {
+                moduleId: moduleId,
+                taskId: taskId,
+                taskName: newTask,
+                assignedTo: taskAssignedTo,
+                status: status,
+                statusUpdate: statusUpdate,
+            })
+
+            if (response.data.updatedTask) {
+                setModules(
+                    modules.map((module) =>
+                        module._id === moduleId
+                            ? {
+                                ...module,
+                                tasks: module.tasks.map((task) =>
+                                    task._id === taskId
+                                        ? response.data.updatedTask
+                                        : task
+                                ),
+                            }
+                            : module
+                    )
+                );
+                setShowUpdateTask(null);
+            }
+            else {
+                console.log("No modules found");
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleRemoveTask = async (moduleId, taskId) => {
+        try {
+            const response = await axios.post("http://localhost:5000/deleteTask", {
+                moduleId: moduleId,
+                taskId: taskId,
+            })
+
+            if (response.data.deletedTask) {
+                setModules(
+                    modules.map((module) =>
+                        module._id === moduleId
+                            ? {
+                                ...module,
+                                tasks: module.tasks.filter((task) => task._id !== taskId),
+                            }
+                            : module
+                    )
+                );
+            }
+            else {
+                console.log("No modules found");
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
     };
 
     return (
         <div className="task-tracker">
-            <button className="add-module-button" onClick={() => setShowAddModule(true)}>
-                Add Module
-            </button>
+            {teamOwner.email == userData.email && (
+                <button className="add-module-button" onClick={() => setShowAddModule(true)}>
+                    Add Module
+                </button>
+            )}
 
             {showAddModule && (
                 <div className="floating-form">
@@ -238,18 +324,22 @@ const TaskTracker = (projId) => {
                                     }}
                                 ></div>
                             </div>
-                            <button
-                                className="update-module-button"
-                                onClick={() => setShowUpdateModule(module._id)}
-                            >
-                                <FaEdit />
-                            </button>
-                            <button
-                                className="delete-module-button"
-                                onClick={() => setModules(modules.filter((m) => m._id !== module._id))}
-                            >
-                                <FaTrash />
-                            </button>
+                            {teamOwner.email == userData.email && (
+                                <button
+                                    className="update-module-button"
+                                    onClick={() => setShowUpdateModule(module._id)}
+                                >
+                                    <FaEdit />
+                                </button>
+                            )}
+                            {teamOwner.email == userData.email && (
+                                <button
+                                    className="delete-module-button"
+                                    onClick={() => handleDeleteModule(module._id)}
+                                >
+                                    <FaTrash />
+                                </button>
+                            )}
                         </div>
 
                         <div className="task-card">
@@ -257,21 +347,8 @@ const TaskTracker = (projId) => {
                                 <div key={task._id} className="task-item">
                                     <input
                                         type="checkbox"
-                                        checked={task.status === 1}
-                                        onChange={() =>
-                                            setModules(
-                                                modules.map((m) =>
-                                                    m._id === module._id
-                                                        ? {
-                                                            ...m,
-                                                            tasks: m.tasks.map((t) =>
-                                                                t._id === task._id ? { ...t, status: !t.status } : t
-                                                            ),
-                                                        }
-                                                        : m
-                                                )
-                                            )
-                                        }
+                                        checked={task.status}
+                                        onChange={() => handleUpdateTask(module._id, task._id, !task.status, true)}
                                     />
                                     <span>{task.taskName}</span>
                                     <div className="avatars">
@@ -284,39 +361,34 @@ const TaskTracker = (projId) => {
                                             </div>
                                         ))}
                                     </div>
-                                    <button
-                                        className="update-task-button"
-                                        onClick={() => setShowUpdateTask({ moduleId: module._id, task })}
-                                    >
-                                        <FaEdit />
-                                    </button>
-                                    <button
-                                        className="action-button"
-                                        onClick={() =>
-                                            setModules(
-                                                modules.map((m) =>
-                                                    m._id === module._id
-                                                        ? {
-                                                            ...m,
-                                                            tasks: m.tasks.filter((t) => t.taskId !== task.taskId),
-                                                        }
-                                                        : m
-                                                )
-                                            )
-                                        }
-                                    >
-                                        <FaTrash />
-                                    </button>
+                                    {teamOwner.email == userData.email && (
+                                        <button
+                                            className="update-task-button"
+                                            onClick={() => setShowUpdateTask({ moduleId: module._id, task })}
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                    )}
+                                    {teamOwner.email == userData.email && (
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleRemoveTask(module._id, task._id)}
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    )}
                                 </div>
                             ))}
 
                             {/* Add Task Button */}
-                            <button
-                                className="add-task-button"
-                                onClick={() => setShowAddTask(module._id)}
-                            >
-                                <FaPlus /> Add Task
-                            </button>
+                            {teamOwner.email == userData.email && (
+                                <button
+                                    className="add-task-button"
+                                    onClick={() => setShowAddTask(module._id)}
+                                >
+                                    <FaPlus /> Add Task
+                                </button>
+                            )}
 
                             {/* Add Task Form */}
                             {showAddTask === module._id && (
@@ -360,13 +432,13 @@ const TaskTracker = (projId) => {
                             )}
                         </div>
 
-                        {showUpdateModule === module.id && (
+                        {showUpdateModule === module._id && (
                             <div className="floating-form">
                                 <input
                                     type="text"
                                     placeholder="Update Module Name"
-                                    value={newModule.title}
-                                    onChange={(e) => setNewModule({ ...newModule, title: e.target.value })}
+                                    value={newModule || module.moduleName}
+                                    onChange={(e) => setNewModule(e.target.value)}
                                     className="input-field"
                                 />
                                 <div className="member-checkbox-list">
@@ -375,18 +447,12 @@ const TaskTracker = (projId) => {
                                             <input
                                                 type="checkbox"
                                                 value={member.username}
-                                                checked={newModule.assignedTo.includes(member.username)}
+                                                checked={assignedTo.includes(member) || module.assignedTo.includes(member)}
                                                 onChange={(e) => {
                                                     if (e.target.checked) {
-                                                        setNewModule({
-                                                            ...newModule,
-                                                            assignedTo: [...newModule.assignedTo, member.username],
-                                                        });
+                                                        setAssignedTo([...assignedTo, member]);
                                                     } else {
-                                                        setNewModule({
-                                                            ...newModule,
-                                                            assignedTo: newModule.assignedTo.filter((m) => m !== member.username),
-                                                        });
+                                                        setAssignedTo(prevAssignedTo => prevAssignedTo.filter(m => m.email !== member.email));
                                                     }
                                                 }}
                                             />
@@ -396,7 +462,7 @@ const TaskTracker = (projId) => {
                                 </div>
                                 <button
                                     className="save-button"
-                                    onClick={() => handleUpdateModule(module.id)}
+                                    onClick={() => handleUpdateModule(module._id)}
                                 >
                                     Save
                                 </button>
@@ -408,33 +474,27 @@ const TaskTracker = (projId) => {
                                 </button>
                             </div>
                         )}
-                        {showUpdateTask && showUpdateTask.moduleId === module.id && (
+                        {showUpdateTask && showUpdateTask.moduleId === module._id && (
                             <div className="floating-form">
                                 <input
                                     type="text"
                                     placeholder="Update Task Name"
-                                    value={newTask.title || showUpdateTask.task.title}
-                                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                                    value={newTask || showUpdateTask.task.taskName}
+                                    onChange={(e) => setNewTask(e.target.value)}
                                     className="input-field"
                                 />
                                 <div className="member-checkbox-list">
-                                    {teamMembers.map((member) => (
+                                    {module.assignedTo.map((member) => (
                                         <label key={member.username} className="checkbox-label">
                                             <input
                                                 type="checkbox"
                                                 value={member.username}
-                                                checked={newTask.assignedTo.includes(member.username) || showUpdateTask.task.assignedTo.includes(member.username)}
+                                                checked={taskAssignedTo.includes(member) || showUpdateTask.task.assignedTo.includes(member)}
                                                 onChange={(e) => {
                                                     if (e.target.checked) {
-                                                        setNewTask({
-                                                            ...newTask,
-                                                            assignedTo: [...newTask.assignedTo, member.username],
-                                                        });
+                                                        setTaskAssignedTo([...taskAssignedTo, member]);
                                                     } else {
-                                                        setNewTask({
-                                                            ...newTask,
-                                                            assignedTo: newTask.assignedTo.filter((m) => m !== member.username),
-                                                        });
+                                                        setTaskAssignedTo(prevAssignedTo => prevAssignedTo.filter(m => m.email !== member.email));
                                                     }
                                                 }}
                                             />
@@ -444,7 +504,7 @@ const TaskTracker = (projId) => {
                                 </div>
                                 <button
                                     className="save-button"
-                                    onClick={() => handleUpdateTask(module.id, showUpdateTask.task.id)}
+                                    onClick={() => handleUpdateTask(module._id, showUpdateTask.task._id, showUpdateTask.task.status, false)}
                                 >
                                     Save
                                 </button>

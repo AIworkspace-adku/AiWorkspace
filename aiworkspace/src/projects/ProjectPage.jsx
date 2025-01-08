@@ -43,7 +43,7 @@ const ProjectPage = () => {
   const renderActiveComponent = () => {
     switch (activeTab) {
       case "task":
-        return <TaskTracker projId={projectId} />;
+        return <TaskTracker projId={projectId} userData = {data} />;
       case "planning":
         return <GanttChart />;
       case "documentation":

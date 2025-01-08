@@ -460,7 +460,7 @@ app.post('/fetchMembersUsingProjId', async (req, res) => {
 		const team = await Team.findById({ _id: project.owner.teamId });
 		const members = team.members;
 		members.push(project.owner);
-		res.status(200).json({ members: members });
+		res.status(200).json({ members: members, owner: project.owner });
 	} catch (error) {
 		res.status(500).send(error);
 	}
@@ -490,11 +490,50 @@ app.post('/fetchModules', async (req, res) => {
 
 	try {
 		const modules = await Modules.find({ projId: projId });
-		res.status(201).json({ modules: modules, message: 'Module created successfully' });
+		res.status(201).json({ modules: modules, message: 'Modules fetched successfully' });
 	}
 	catch (error) {
 		console.error('Error creating module:', error);
-		res.status(500).json({ message: 'Failed to create module' });
+		res.status(500).json({ message: 'Failed to fetch module' });
+	}
+});
+
+app.post('/updateModule', async (req, res) => {
+	const { moduleId, moduleName, assignedTo } = req.body;
+
+	try {
+		const module = await Modules.findById(moduleId);
+		if (!module) return res.status(404).json({ message: 'Module not found' });
+		console.log(moduleName, assignedTo);
+
+		if (moduleName !== '') {
+			module.moduleName = moduleName;
+		}
+		if (assignedTo.length !== 0) {
+			module.assignedTo = assignedTo;
+		}
+		await module.save();
+
+		res.status(201).json({ updatedModule: module, message: 'Module updated successfully' });
+	}
+	catch (error) {
+		console.error('Error updating module:', error);
+		res.status(500).json({ message: 'Failed to update module' });
+	}
+});
+
+app.post('/deleteModule', async (req, res) => {
+	const { moduleId } = req.body;
+
+	try {
+		const module = await Modules.findByIdAndDelete(moduleId);
+		if (!module) return res.status(404).json({ message: 'Module not found' });
+
+		res.status(200).json({ deletedModule: module, message: 'Module deleted successfully' });
+	}
+	catch (error) {
+		console.error('Error deleting module:', error);
+		res.status(500).json({ message: 'Failed to delete module' });
 	}
 });
 
@@ -522,6 +561,58 @@ app.post('/addTask', async (req, res) => {
 	catch (error) {
 		console.error('Error creating task:', error);
 		res.status(500).json({ message: 'Failed to create task' });
+	}
+});
+
+app.post('/updateTask', async (req, res) => {
+	const { moduleId, taskId, taskName, assignedTo, status, statusUpdate } = req.body;
+
+	try {
+		const module = await Modules.findById(moduleId);
+		const task = module.tasks.find(t => t._id.toString() === taskId);
+
+		if (!task) return res.status(404).json({ message: 'Task not found' });
+
+		if (statusUpdate) {
+			task.status = status;
+		}
+		else {
+			if (taskName) {
+				task.taskName = taskName;
+			}
+			if (assignedTo.length !== 0) {
+				task.assignedTo = assignedTo;
+			}
+		}
+
+		await module.save();
+
+		const updatedTask = module.tasks.find(t => t._id.toString() === taskId);
+		return res.status(200).json({ message: 'Task updated successfully', updatedTask: updatedTask });
+	}
+	catch (error) {
+		console.error('Error updating task:', error);
+		res.status(500).json({ message: 'Failed to update task' });
+	}
+});
+
+app.post('/deleteTask', async (req, res) => {
+	const { moduleId, taskId } = req.body;
+
+	try {
+		const module = await Modules.findById(moduleId);
+		const task = module.tasks.find(t => t._id.toString() === taskId);
+
+		if (!task) return res.status(404).json({ message: 'Task not found' });
+
+		module.tasks = module.tasks.filter(t => t._id.toString() !== taskId);
+		await module.save();
+
+		return res.status(200).json({ message: 'Task deleted successfully', deletedTask: task });
+	}
+	catch (error) {
+		console.error('Error deleting task:', error);
+		res.status(500).json({ message: 'Failed to delete task' });
 	}
 });
 
