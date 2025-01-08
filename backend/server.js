@@ -9,7 +9,6 @@ const User = require('./models/User');
 const Team = require('./models/Teams');
 const Projects = require('./models/Projects');
 const Modules = require('./models/Modules');
-const Tasks = require('./models/Tasks');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
@@ -352,6 +351,18 @@ app.post('/getTeamById', async (req, res) => {
 		const team = await Team.findById({ _id: teamId });
 		res.json({ team: team });
 	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/updateTeamName', async (req, res) => {
+	const { teamId, teamName } = req.body;
+
+	try {
+		const team = await Team.findByIdAndUpdate(teamId, { teamName: teamName });
+		res.status(200).json({ team: team });
+	}
+	catch (error) {
 		res.status(500).send(error);
 	}
 });

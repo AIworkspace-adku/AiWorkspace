@@ -92,8 +92,22 @@ const TeamPage = () => {
   }
 
   // Handlers
-  const handleTeamNameUpdate = () => {
-    alert("Team name updated successfully!"); // Placeholder for backend update
+  const handleTeamNameUpdate = async() => {
+    try {
+      const response = await axios.post('http://localhost:5000/updateTeamName', {
+        teamId,
+        teamName,
+      });
+
+      if (response.data.team) {
+        alert('Team name updated successfully!');
+      } else {
+        console.log('Team name not updated');
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong, try again.');
+    }
   };
 
   const addMember = async () => {
