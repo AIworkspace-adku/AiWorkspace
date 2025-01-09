@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../components/dashboardpage/Sidebar"; // Consistent Sidebar import
 import styles from "./TeamPage.module.css";
@@ -16,6 +16,7 @@ const TeamPage = () => {
 
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const [owner, setOwner] = useState("");
   const [userName, setUserName] = useState("");
 
@@ -28,7 +29,12 @@ const TeamPage = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          if (response.status === 403) {
+						navigate('/session-timeout');
+					}
+					else {
+						throw new Error('Failed to fetch data');
+					}
         }
         return response.json();
       })

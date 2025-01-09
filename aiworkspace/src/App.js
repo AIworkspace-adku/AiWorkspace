@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
 import Hero from './components/herosection/Hero';
 import Infinite from './components/infinitescroller/Infinite';
@@ -12,6 +13,7 @@ function App() {
 
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		// Fetch data from the protected route
@@ -22,7 +24,12 @@ function App() {
 		})
 			.then((response) => {
 				if (!response.ok) {
-					throw new Error('Failed to fetch data');
+					if (response.status === 403) {
+						navigate('/session-timeout');
+					}
+					else {
+						throw new Error('Failed to fetch data');
+					}
 				}
 				return response.json();
 			})
@@ -30,8 +37,7 @@ function App() {
 				setData(data);
 			})
 			.catch((error) => {
-				console.log(error);
-				setError(error.message)
+				console.error('Fetch error:', error);
 			});
 	}, []);
 
