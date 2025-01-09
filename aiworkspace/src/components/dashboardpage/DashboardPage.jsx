@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styles from './DashboardPage.module.css';
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
@@ -8,6 +9,7 @@ import RightPanel from './RightPanel';
 const DashboardPage = () => {
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		// Fetch data from the protected route
@@ -18,7 +20,12 @@ const DashboardPage = () => {
 		})
 			.then((response) => {
 				if (!response.ok) {
-					throw new Error('Failed to fetch data');
+					if (response.status === 403) {
+						navigate('/session-timeout');
+					}
+					else {
+						throw new Error('Failed to fetch data');
+					}
 				}
 				return response.json();
 			})
