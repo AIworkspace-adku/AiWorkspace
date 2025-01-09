@@ -11,14 +11,10 @@ const Navbar = ({ setData, data }) => {
 
   const handleLogout = async () => {
     try {
-      // Send request to the logout endpoint
       await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
-
-      // Clear any client-side stored data (if applicable)
-      localStorage.removeItem('authToken'); // If you store a token locally
+      localStorage.removeItem('authToken');
       setData(null);
       alert('Logged out successfully!');
-
     } catch (error) {
       console.error('Error logging out:', error);
       alert('Logout failed. Please try again.');
@@ -33,17 +29,23 @@ const Navbar = ({ setData, data }) => {
         </div>
         {data && (
           <div id="mainListDiv" className={`main_list ${menuActive ? 'show_list' : ''}`}>
-          <ul className="navlinks">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Features</a></li>
-            <li><a href="/docs">editor</a></li>
-            <li><a href="/whiteboard">whiteboard</a></li>
-            <li><a onClick={(e) => {
-              e.preventDefault(); // Prevent the link from reloading the page
-              handleLogout();     // Trigger logout logic
-            }}>logout</a></li>
-          </ul>
-        </div>
+            <ul className="navlinks">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Features</a></li>
+              <li><a href="/docs">Editor</a></li>
+              <li><a href="/whiteboard">Whiteboard</a></li>
+              <li>
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLogout();
+                  }}
+                >
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
         )}
         <span className={`navTrigger ${menuActive ? 'active' : ''}`} onClick={toggleMenu}>
           <i></i>

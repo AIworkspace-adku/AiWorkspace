@@ -1,58 +1,63 @@
 import React, { useEffect } from 'react';
-import Split from 'react-split';
 import './Hero.css';
-import rightBg from '../../../src/utils/right_bg_pics/right_bg1.png';
+import Navbar from '../navbar/Navbar';
 
 const Hero = ({ data }) => {
-    useEffect(() => {
-        const sparklesContainer = document.querySelector('.sparkles-container');
-        for (let i = 0; i < 15; i++) { // Add sparkles dynamically
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.top = `${Math.random() * 100}%`;
-            sparkle.style.left = `${Math.random() * 100}%`;
-            sparkle.style.animationDelay = `${Math.random()}s`;
-            sparklesContainer.appendChild(sparkle);
-        }
-    }, []);
+  useEffect(() => {
+    const dustContainer = document.querySelector('.dust-container');
 
-    return (
-        <div className="hero-container">
-            <Split
-                className="split"
-                sizes={[45, 55]}
-                minSize={200}
-                expandToMin={false}
-                gutterSize={10}
-                gutterAlign="center"
-                snapOffset={30}
-                dragInterval={1}
-                direction="horizontal"
-                cursor="col-resize"
-            >
-                {/* Left Section */}
-                <div className="land-left">
-                    <h1>Workspace like No other</h1>
-                    <br />
-                    {!data && (
-                        <button className="button">
-                            <a
-                                href="/signin"
-                                style={{ color: 'white', textDecoration: 'none' }}
-                            >
-                                Signin
-                            </a>
-                        </button>
-                    )}
-                </div>
+    // Generate initial particles
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'dust-particle';
+      particle.style.top = `${Math.random() * 100}%`;
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${Math.random() * 4}s`;
+      dustContainer.appendChild(particle);
+    }
 
-                {/* Right Section */}
-                <div className="land-right">
-                <div className="sparkles-container"></div>
-                </div>
-            </Split>
+    // Cursor tracking effect
+    const handleMouseMove = (e) => {
+      const particles = document.querySelectorAll('.dust-particle');
+      particles.forEach((particle) => {
+        const rect = particle.getBoundingClientRect();
+        const distanceX = e.clientX - rect.left;
+        const distanceY = e.clientY - rect.top;
+        const distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
+
+        // Apply a small offset based on cursor proximity
+        const maxOffset = 20; // Maximum offset distance
+        const offsetX = maxOffset * (distanceX / distance) * Math.min(1 / distance, 0.1);
+        const offsetY = maxOffset * (distanceY / distance) * Math.min(1 / distance, 0.1);
+
+        particle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return (
+    <div className="hero-container">
+
+      <div className="hero-content">
+        
+        <h1 className="hero-title">AI-Powered Workspace for Teams</h1>
+        <p className="hero-tagline">
+          Improve your project management and team efficiency with the help of AI and us
+        </p>
+        <div className="hero-buttons">
+          <a href="/signin" className="cta-button primary">Start for Free</a>
         </div>
-    );
+      </div>
+
+      <div className="dust-container"></div>
+    </div>
+  );
 };
 
 export default Hero;
