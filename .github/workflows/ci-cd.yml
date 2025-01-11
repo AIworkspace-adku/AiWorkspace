@@ -1,0 +1,42 @@
+name: MERN CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - cicd-creation  # Trigger when changes are pushed to the main branch
+  pull_request:
+    branches:
+      - cicd-creation  # Trigger on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js (Backend)
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.2.0'  # Use the appropriate Node.js version for your project
+
+    - name: Install Backend Dependencies
+      run: |
+        cd backend  # Assuming your backend is in a 'backend' directory
+        npm install
+
+    - name: Run Backend Tests
+      run: |
+        cd backend
+        npm test
+
+    - name: Set up React (Frontend)
+      run: |
+        cd aiworkspace  # Assuming your frontend is in a 'frontend' directory
+        npm install
+
+    - name: Run Frontend Tests
+      run: |
+        cd aiworkspace
+        npm test
