@@ -24,7 +24,7 @@ const ProjectPage = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          if (response.status === 403) {
+          if (response.status === 401) {
 						navigate('/session-timeout');
 					}
 					else {
@@ -64,7 +64,7 @@ const ProjectPage = () => {
   return (
     <div className={styles.projectPage}>
       {/* Sidebar */}
-      <Sidebar userData={data} />
+      <Sidebar setData={setData} userData={data} />
 
       {/* Main Content */}
       <div className={styles.mainContent}>

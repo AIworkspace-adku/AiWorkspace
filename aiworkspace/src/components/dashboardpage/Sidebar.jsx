@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Sidebar.module.css';
-import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus } from 'react-icons/fa';
+import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus, FaSignOutAlt } from 'react-icons/fa';
 
-const Sidebar = ({ userData }) => {
+const Sidebar = ({ setData, userData }) => {
   const owner = userData.email;
   const userName = userData.username;
   const [yourTeams, setYourTeams] = useState([]);
@@ -37,8 +37,20 @@ const Sidebar = ({ userData }) => {
   }, []);
 
   if (!yourTeams || !memberTeams) {
-		return <div>Loading...</div>; // Show loading message if data is still being fetched
-	}
+    return <div>Loading...</div>; // Show loading message if data is still being fetched
+  }
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
+      localStorage.removeItem('authToken');
+      setData(null);
+      alert('Logged out successfully!');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      alert('Logout failed. Please try again.');
+    }
+  };
 
   const toggleExpand = (key) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -49,16 +61,16 @@ const Sidebar = ({ userData }) => {
     setShowCreateModal(true);
   };
 
-  const handleTeamSubmit = async(teamName) => {
+  const handleTeamSubmit = async (teamName) => {
     try {
       const response = await axios.post('http://localhost:5000/createTeam', {
         teamName,
         owner,
         ownerName: userName
       },
-      {
-        withCredentials: true
-      });
+        {
+          withCredentials: true
+        });
 
       if (response.data) {
         alert('Team created successfully!');
@@ -76,7 +88,7 @@ const Sidebar = ({ userData }) => {
     setShowCreateModal(true);
   };
 
-  const handleSubmitProject = async(projName, teamId) => {
+  const handleSubmitProject = async (projName, teamId) => {
     try {
       const response = await axios.post('http://localhost:5000/createProject', {
         projName: projName,
@@ -85,9 +97,9 @@ const Sidebar = ({ userData }) => {
         ownerName: userName,
         members: projMembers,
       },
-      {
-        withCredentials: true
-      });
+        {
+          withCredentials: true
+        });
 
       if (response.data) {
         alert('Project created successfully!');
@@ -215,6 +227,20 @@ const Sidebar = ({ userData }) => {
           <div className={styles.nodeInfo}>
             <FaUser />
             <span className={styles.nodeName}>Profile</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Signout */}
+      <div className={styles.nodeContainer}>
+        <div className={styles.nodeHeader}>
+          <div className={styles.nodeInfo}>
+            <FaSignOutAlt />
+            <span
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogout();
+              }} className={styles.nodeName}>Signout</span>
           </div>
         </div>
       </div>

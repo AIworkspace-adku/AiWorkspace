@@ -20,7 +20,7 @@ const DashboardPage = () => {
 		})
 			.then((response) => {
 				if (!response.ok) {
-					if (response.status === 403) {
+					if (response.status === 401) {
 						navigate('/session-timeout');
 					}
 					else {
@@ -45,7 +45,7 @@ const DashboardPage = () => {
 
 	return (
 		<div className={styles.dashboardContainer}>
-			<Sidebar userData={data} />
+			<Sidebar setData={setData} userData={data} />
 			<MainContent userName={data.username} />
 		</div>
 	);

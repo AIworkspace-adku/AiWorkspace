@@ -29,7 +29,7 @@ const TeamPage = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          if (response.status === 403) {
+          if (response.status === 401) {
 						navigate('/session-timeout');
 					}
 					else {
@@ -192,7 +192,7 @@ const TeamPage = () => {
 
   return (
     <div className={styles.teamPage}>
-      <Sidebar userData={data} /> {/* Consistent Sidebar */}
+      <Sidebar setData={setData} userData={data} /> {/* Consistent Sidebar */}
 
       <div className={styles.content}>
         {/* Top Section: Team Name */}
