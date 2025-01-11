@@ -13,9 +13,9 @@ import {
     TextField,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Sidebar from './docs_components/Sidebar';
+import Sidebar from './docs_components/Sidebar.js';
 import CloseIcon from '@mui/icons-material/Close';
-import EditorComponent from './docs_components/EditorComponent';
+import EditorComponent from './docs_components/EditorComponent.js';
 import './App_docs.css';
 
 function WelcomeScreen({ onCreateDocument, username }) {

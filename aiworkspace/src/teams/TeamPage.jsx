@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "../components/dashboardpage/Sidebar"; // Consistent Sidebar import
+import Sidebar from "../components/dashboardpage/Sidebar.jsx"; // Consistent Sidebar import
 import styles from "./TeamPage.module.css";
 
 const TeamPage = () => {

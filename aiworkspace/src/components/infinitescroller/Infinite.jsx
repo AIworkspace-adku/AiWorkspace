@@ -1,6 +1,6 @@
 import React from 'react';
 import './Infinite.css';
-import { logos } from '../../utils/constant';
+import { logos } from '../../utils/constant.js';
 
 const Infinite = () => {
   return <section className="logos">

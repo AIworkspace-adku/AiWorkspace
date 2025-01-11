@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { io } from 'socket.io-client';
-import EditorToolbar from './EditorToolbar';
+import EditorToolbar from './EditorToolbar.js';
 import 'react-quill/dist/quill.snow.css';
 import './EditorComponent.css';
 import Quill from 'quill';

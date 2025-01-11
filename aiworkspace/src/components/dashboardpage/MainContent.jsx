@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './MainContent.module.css';
-import ProjectCards from './ProjectCards';
-import TasksSection from './TasksSection';
-import ScheduleSection from './ScheduleSection';
+import ProjectCards from './ProjectCards.jsx';
+import TasksSection from './TasksSection.jsx';
+import ScheduleSection from './ScheduleSection.jsx';
 
 const MainContent = ({ userName }) => {
   const [tasks, setTasks] = useState([]);

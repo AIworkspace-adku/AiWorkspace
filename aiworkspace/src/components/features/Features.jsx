@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./Features.css";
-import { features } from "../../utils/constant";
+import { features } from "../../utils/constant.js";
 
 const Features = () => {
   const featureRefs = useRef([]);

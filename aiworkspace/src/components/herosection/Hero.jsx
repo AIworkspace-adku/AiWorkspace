@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './Hero.css';
-import Navbar from '../navbar/Navbar';
+import Navbar from '../navbar/Navbar.jsx';
 
 const Hero = ({ data }) => {
   useEffect(() => {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaComments, FaVideo, FaTasks, FaFileAlt, FaLightbulb, FaRobot } from "react-icons/fa";
-import Sidebar from "../components/dashboardpage/Sidebar"; // Ensure Sidebar is consistent
-import TaskTracker from "../Tasks/TaskTracker"; // Import your task tracker component
-import GanttChart from "../projects/GanttChart"; // Dummy planning component
-import Docs from "../App_docs"; // Dummy documentation component
-import Gpt from "../chatGpt/Gpt"; // Dummy GPT component
+import Sidebar from "../components/dashboardpage/Sidebar.jsx"; // Ensure Sidebar is consistent
+import TaskTracker from "../Tasks/TaskTracker.jsx"; // Import your task tracker component
+// import GanttChart from "../projects/GanttChart"; // Dummy planning component
+import Docs from "../App_docs.js"; // Dummy documentation component
+import Gpt from "../chatGpt/Gpt.jsx"; // Dummy GPT component
 import styles from "./ProjectPage.module.css";
 
 const ProjectPage = () => {
@@ -51,7 +51,7 @@ const ProjectPage = () => {
       case "task":
         return <TaskTracker projId={projectId} userData = {data} />;
       case "planning":
-        return <GanttChart />;
+        // return <GanttChart />;
       case "documentation":
         return <Docs projId={projectId} />;
       case "gpt":

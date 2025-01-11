@@ -1,5 +1,6 @@
 {
   "name": "aiworkspace",
+  "type": "module",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -83,6 +84,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
+    ]
   },
   "eslintConfig": {
     "extends": [

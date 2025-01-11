@@ -1,19 +1,19 @@
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import Signin from './signup/signin/Signin';
-import Register from './signup/register/Register';
-import Docs from './App_docs'
-import White from './whiteboard/White';
-import DashboardPage from './components/dashboardpage/DashboardPage';
-import TeamPage from '../src/teams/TeamPage';
-import GanttChart from '../src/projects/GanttChart';
-import ProjectPage from '../src/projects/ProjectPage';
-import TaskTracker from '../src/Tasks/TaskTracker';
-import Profile from '../src/profile/Profile';
-import SessionTimeout from './session/SessionTimeout';
+import App from './App.js';
+import reportWebVitals from './reportWebVitals.js';
+import Signin from './signup/signin/Signin.jsx';
+import Register from './signup/register/Register.jsx';
+import Docs from './App_docs.js'
+import White from './whiteboard/White.jsx';
+import DashboardPage from './components/dashboardpage/DashboardPage.jsx';
+import TeamPage from '../src/teams/TeamPage.jsx';
+// import GanttChart from '../src/projects/GanttChart.jsx';
+import ProjectPage from '../src/projects/ProjectPage.jsx';
+import TaskTracker from '../src/Tasks/TaskTracker.jsx';
+import Profile from '../src/profile/Profile.jsx';
+import SessionTimeout from './session/SessionTimeout.jsx';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -27,7 +27,7 @@ root.render(
         <Route exact path="/dashboard" element={<DashboardPage />} />
         <Route path="/teams/:teamId" element={<TeamPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />
-        <Route path="/planning" element={<GanttChart />} />
+        {/* <Route path="/planning" element={<GanttChart />} /> */}
         <Route path="/tasktracker" element={<TaskTracker />} />
         <Route path="/profile" element={<Profile />} />
         <Route exact path="/session-timeout" element={<SessionTimeout />} />

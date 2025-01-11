@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './components/navbar/Navbar';
-import Hero from './components/herosection/Hero';
-import Infinite from './components/infinitescroller/Infinite';
-import Features from './components/features/Features';
-import Testimonial from './components/testimonial/Testimonial';
-import Footer from './components/footer/Footer';
+import Navbar from './components/navbar/Navbar.jsx';
+import Hero from './components/herosection/Hero.jsx';
+import Infinite from './components/infinitescroller/Infinite.jsx';
+import Features from './components/features/Features.jsx';
+import Testimonial from './components/testimonial/Testimonial.jsx';
+import Footer from './components/footer/Footer.jsx';
 import './App.css';
 import axios from 'axios';
 

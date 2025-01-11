@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './RightPanel.module.css';
-import ProgressChart from './ProgressChart';
+import ProgressChart from './ProgressChart.jsx';
 
 const RightPanel = ({ userName }) => {
   return (

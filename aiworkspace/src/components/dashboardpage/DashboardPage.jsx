@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styles from './DashboardPage.module.css';
-import Sidebar from './Sidebar';
-import MainContent from './MainContent';
-import RightPanel from './RightPanel';
+import Sidebar from './Sidebar.jsx';
+import MainContent from './MainContent.jsx';
+import RightPanel from './RightPanel.jsx';
 
 const DashboardPage = () => {
 	const [data, setData] = useState(null);
