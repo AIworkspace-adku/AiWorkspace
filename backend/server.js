@@ -292,7 +292,7 @@ app.post('/api/auth/login', async (req, res) => {
 			httpOnly: true,
 			secure: false, // Use secure cookies in production
 			sameSite: 'strict',
-			maxAge: 60 * 60 * 1000, // 1 hour
+			maxAge:  60 * 60 * 1000, // 1 hour
 		});
 
 		// Respond with success message (omit token for now)
@@ -634,13 +634,15 @@ const authenticate = (req, res, next) => {
 	if (!token) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
-
 	try {
 		const user = jwt.verify(token, process.env.SECRET_KEY); // Decode the token
 		req.user = user; // Attach user info to the request
 		next();
 	} catch (err) {
-		res.status(403).json({ error: 'Invalid or expired token' });
+		if (err.name === 'TokenExpiredError') {
+			return res.status(403).json({ error: 'Token has expired' });
+		}
+		return res.status(403).json({ error: 'Invalid or malformed token' });
 	}
 };
 
