@@ -3,6 +3,7 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+    image: krithikpatil/aiworkspace-backend-repo
     ports:
       - "5000:5000"
     env_file:
@@ -16,6 +17,7 @@ services:
     build:
       context: ./aiworkspace
       dockerfile: Dockerfile
+    image: krithikpatil/aiworkspace-frontend-repo
     ports:
       - "3000:3000"
     depends_on:
@@ -31,3 +33,4 @@ networks:
 
 volumes:
   mongodb_data:
+    external: true
