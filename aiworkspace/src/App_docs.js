@@ -61,7 +61,7 @@ function App_docs(projId) {
 
     const fetchUserData = async () => {
         try {
-            const response = await fetch('http://localhost:5000/protected', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
                 method: 'POST',
                 credentials: 'include',
                 withCredentials: true,
@@ -81,7 +81,7 @@ function App_docs(projId) {
 
     const fetchProjData = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/getProjByProjId', {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getProjByProjId`, {
                 projId: projectId,
             });
 
@@ -100,7 +100,7 @@ function App_docs(projId) {
 
     const fetchDocuments = async (owner) => {
         try {
-            const response = await axios.post('http://localhost:5000/fetchDocuments', { projId: projectId });
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchDocuments`, { projId: projectId });
             setDocuments(response.data);
         } catch (error) {
             console.error('Error fetching documents:', error);
@@ -115,7 +115,7 @@ function App_docs(projId) {
                 email: data.email,
                 username: data.username,
             }
-            const response = await axios.post('http://localhost:5000/documents', {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/documents`, {
                 title: newDocTitle || 'Untitled Document',
                 owner: ownerData,
                 content: '',
@@ -133,7 +133,7 @@ function App_docs(projId) {
     // Delete a document
     const deleteDocument = async (id) => {
         try {
-            await axios.post(`http://localhost:5000/documents/delete/${id}`);
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/documents/delete/${id}`);
             setDocuments((prevDocs) => prevDocs.filter((doc) => doc._id !== id));
 
             if (currentDoc === id) {
@@ -147,7 +147,7 @@ function App_docs(projId) {
     // Rename a document
     const renameDocument = async (id, newTitle) => {
         try {
-            await axios.post(`http://localhost:5000/renameDocuments/${id}/${newTitle}`);
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/renameDocuments/${id}/${newTitle}`);
             setDocuments((prevDocs) =>
                 prevDocs.map((doc) =>
                     doc._id === id ? { ...doc, title: newTitle } : doc

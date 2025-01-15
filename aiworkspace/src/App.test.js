@@ -1,12 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { act } from 'react';
 
 test('renders learn react link', () => {
-  render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-  // Your test assertions here
+	act(() => {
+		render(
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		);
+	});
 });

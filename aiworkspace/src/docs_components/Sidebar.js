@@ -46,7 +46,7 @@ function Sidebar({ documents, currentDoc, setCurrentDoc, addDocument, deleteDocu
         updatedDocs[renameDocIndex].title = newDocTitle;
 
         try {
-            await axios.post(`http://localhost:5000/renameDocuments/${renameDocId}/${newDocTitle}`);
+            await axios.post(`${process.env.REACT_APP_BACKEND_URL}/renameDocuments/${renameDocId}/${newDocTitle}`);
             setCurrentDoc(renameDocIndex);
         } catch (error) {
             console.error('Error renaming document:', error);

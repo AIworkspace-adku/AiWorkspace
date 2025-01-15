@@ -22,7 +22,7 @@ const TeamPage = () => {
 
   useEffect(() => {
     // Fetch data from the protected route
-    fetch('http://localhost:5000/protected', {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
       method: 'POST',
       credentials: 'include',
       withCredentials: true, // Include cookies in the request
@@ -52,7 +52,7 @@ const TeamPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/getTeamById', {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getTeamById`, {
           teamId,
         });
 
@@ -75,7 +75,7 @@ const TeamPage = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/getProjByTeamId', {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getProjByTeamId`, {
           teamId,
         });
 
@@ -100,7 +100,7 @@ const TeamPage = () => {
   // Handlers
   const handleTeamNameUpdate = async() => {
     try {
-      const response = await axios.post('http://localhost:5000/updateTeamName', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTeamName`, {
         teamId,
         teamName,
       });
@@ -122,7 +122,7 @@ const TeamPage = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/addMemberToTeam', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/addMemberToTeam`, {
         teamId,
         newMemberEmail,
       });
@@ -142,7 +142,7 @@ const TeamPage = () => {
   const removeMember = (member) => {
 
     try {
-      const response = axios.post('http://localhost:5000/removeMemberFromTeam', {
+      const response = axios.post(`${process.env.REACT_APP_BACKEND_URL}/removeMemberFromTeam`, {
         teamId,
         memberEmail: member.email,
       });
@@ -162,7 +162,7 @@ const TeamPage = () => {
 
   const handleSubmitProject = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/createProject', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/createProject`, {
         projName: newProject,
         teamId,
         owner: owner,

@@ -17,7 +17,7 @@ const ProjectPage = () => {
 
   useEffect(() => {
     // Fetch data from the protected route
-    fetch("http://localhost:5000/protected", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
       method: "POST",
       credentials: "include",
       withCredentials: true, // Include cookies in the request

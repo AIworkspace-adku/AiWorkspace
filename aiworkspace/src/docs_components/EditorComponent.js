@@ -8,7 +8,7 @@ import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 
 Quill.register('modules/cursors', QuillCursors);
-const socket = io('http://localhost:5000');
+const socket = io('${process.env.REACT_APP_BACKEND_URL}');
 
 function EditorComponent({ userData, document_data, onUpdateContent }) {
     const quillRef = useRef(null);
@@ -81,7 +81,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
 
     useEffect(() => {
         const fetchDocument = async () => {
-            const response = await fetch(`http://localhost:5000/getDocument/${document_data.id}`);
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/getDocument/${document_data.id}`);
             if (response.ok) {
                 const data = await response.json();
                 const quill = quillRef.current.getEditor();
@@ -103,7 +103,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
             const delta = quill.getContents();
 
             try {
-                const response = await fetch('http://localhost:5000/saveDocument', {
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/saveDocument`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -244,7 +244,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
         setCurrentQueryIndex(-1);
 
         try {
-            const response = await fetch('http://localhost:5000/gemini-query', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/gemini-query`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query }),
@@ -287,7 +287,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
         if (!newMemberEmail) return;
 
         try {
-            const response = await fetch('http://localhost:5000/addMember', {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/addMember`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
