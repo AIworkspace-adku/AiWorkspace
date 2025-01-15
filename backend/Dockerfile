@@ -20,4 +20,4 @@ EXPOSE 5000
 ENV NODE_ENV=production
 
 # Use a robust CMD instruction to start the app
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
