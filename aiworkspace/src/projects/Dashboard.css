@@ -1,0 +1,101 @@
+/* Dashboard container styles */
+.dashboardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  .topSection {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .sectionTitle {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+  
+  .modulesContainer {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .moduleCard {
+    background-color: #2b2d42; /* Dark card background */
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .moduleName {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .assignedUsers {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  
+  .progressBar {
+    width: 100%;
+    height: 10px;
+    background-color: #666;
+    border-radius: 5px;
+  }
+  
+  .progress {
+    height: 100%;
+    background-color: #4fa3e1; /* Blue for progress */
+    border-radius: 5px;
+    text-align: center;
+    line-height: 10px;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  /* Chart container and styling */
+  .chartContainer {
+    background-color: #2b2d42; /* Dark background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+  }
+  
+  .chartContainer canvas {
+    width: 100% !important;
+    height: 300px !important; /* Set height to ensure charts aren't too big */
+    border-radius: 8px;
+  }
+  
+  /* Bottom section styling */
+  .bottomSection {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Card for the bottom section */
+  .bottomCard {
+    background-color: #2b2d42;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
