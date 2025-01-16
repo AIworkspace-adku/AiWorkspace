@@ -17,22 +17,29 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // Load environment variables
 dotenv.config();
 
+const allowedOrigins = [
+	'http://localhost:3000',
+	process.env.FRONTEND_URL
+];
+
 const app = express();
 
 // Middleware
 app.use(express.json()); // To handle JSON data
 app.use(cookieParser());
 app.use(cors({
-	origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+	origin: allowedOrigins,
 	credentials: true,              // Allow cookies
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
 	cors: {
-		origin: process.env.FRONTEND_URL, // Replace with your frontend URL if different
-		methods: ["post", "POST"]
+		origin: allowedOrigins, // Replace with your frontend URL if different
+		methods: ["post", "POST", "GET"]
 	}
 });
 
@@ -292,7 +299,7 @@ app.post('/api/auth/login', async (req, res) => {
 			httpOnly: true,
 			secure: false, // Use secure cookies in production
 			sameSite: 'strict',
-			maxAge:  60 * 60 * 1000, // 1 hour
+			maxAge: 60 * 60 * 1000, // 1 hour
 		});
 
 		// Respond with success message (omit token for now)
