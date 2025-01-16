@@ -17,6 +17,8 @@ const TaskTracker = lazy(() => import('../src/Tasks/TaskTracker.jsx'));
 const Profile = lazy(() => import('../src/profile/Profile.jsx'));
 const SessionTimeout = lazy(() => import('./session/SessionTimeout.jsx'));
 const Scheduler =lazy(() => import('../src/projects/Scheduler.jsx'));
+const MyTask = lazy(() => import('../src/mytask/MyTask.jsx'));
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -35,6 +37,7 @@ root.render(
           <Route path="/profile" element={<Profile />} />
           <Route exact path="/session-timeout" element={<SessionTimeout />} />
           <Route path="/scheduler" element={<Scheduler />} />
+          <Route path="/mytask" element={<MyTask />} />
         </Routes>
       </Suspense>
     </Router>

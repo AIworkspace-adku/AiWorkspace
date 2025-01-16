@@ -1,0 +1,132 @@
+/* Main container for MyTask page */
+.myTaskContainer {
+  background: linear-gradient(168deg, rgba(2,0,36,1) 0%, rgba(0,0,3,1) 50%, rgba(75,101,215,1) 100%);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  font-size: 1.6rem;
+  min-height: 100vh;
+  color: #fff;
+}
+
+/* Page title */
+.pageTitle {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Projects container */
+.projectsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Project card */
+.projectCard {
+  background: rgba(255, 255, 255, 0.07); /* Glassmorphism effect */
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.projectCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Project header (name + team) */
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.projectName {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.teamName {
+  font-size: 1.5rem;
+  color: #b3b3b3;
+}
+
+/* Task list inside the project card */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Task item (each task in the list) */
+.taskItem {
+  background: rgba(255, 255, 255, 0.1); /* Slightly darker background for each task */
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.6rem;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.taskItem:hover {
+  transform: translateY(-3px);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.taskItem .taskDescription {
+  flex-grow: 1;
+  color: #fff;
+  font-size: 1.6rem;
+}
+
+.taskItem .taskDescription.completed {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.taskItem .taskDeadline {
+  font-size: 1.4rem;
+  color: #b3b3b3;
+}
+
+.taskItem .taskCheckbox {
+  cursor: pointer;
+}
+
+/* Checkbox for task completion */
+input[type='checkbox'] {
+  width: 2rem;
+  height: 2rem;
+  accent-color: #38bdf8;
+}
+
+/* Completed task */
+input[type='checkbox']:checked + .taskDescription {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+/* Mobile responsiveness for layout */
+@media (max-width: 768px) {
+  .projectsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .pageTitle {
+    font-size: 2.5rem;
+  }
+}

@@ -3,6 +3,7 @@ import axios from 'axios';
 import styles from './Sidebar.module.css';
 import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus, FaSignOutAlt } from 'react-icons/fa';
 
+
 const Sidebar = ({ setData, userData }) => {
   const owner = userData.email;
   const userName = userData.username;
@@ -200,10 +201,12 @@ const Sidebar = ({ setData, userData }) => {
       {/* Tasks */}
       <div className={styles.nodeContainer}>
         <div className={styles.nodeHeader}>
+        <a href="/mytask" className={styles.nodeLink}> {/* Use <a> for redirection */}
           <div className={styles.nodeInfo}>
             <FaTasks />
             <span className={styles.nodeName}>Tasks</span>
           </div>
+        </a>
         </div>
       </div>
 
