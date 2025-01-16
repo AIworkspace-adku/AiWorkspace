@@ -7,6 +7,7 @@ import TaskTracker from "../Tasks/TaskTracker.jsx"; // Import your task tracker 
 import Docs from "../App_docs.js"; // Dummy documentation component
 import Gpt from "../chatGpt/Gpt.jsx"; // Dummy GPT component
 import styles from "./ProjectPage.module.css";
+import Scheduler from "./Scheduler.jsx";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -56,6 +57,8 @@ const ProjectPage = () => {
         return <Docs projId={projectId} />;
       case "gpt":
         return <Gpt />;
+        case "scheduler":
+          return <Scheduler />;
       default:
         return <div>Select an option from the navbar</div>;
     }
@@ -110,6 +113,12 @@ const ProjectPage = () => {
             }`}
             onClick={() => setActiveTab("gpt")}
           >
+          <button
+            className={`${styles.navButton} ${
+              activeTab === "scheduler" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("scheduler")}
+          ></button>
             <FaRobot /> GPT
           </button>
         </div>

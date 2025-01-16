@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
 
+
 // Lazy-loaded components
 const Signin = lazy(() => import('./signup/signin/Signin.jsx'));
 const Register = lazy(() => import('./signup/register/Register.jsx'));
@@ -15,7 +16,7 @@ const ProjectPage = lazy(() => import('../src/projects/ProjectPage.jsx'));
 const TaskTracker = lazy(() => import('../src/Tasks/TaskTracker.jsx'));
 const Profile = lazy(() => import('../src/profile/Profile.jsx'));
 const SessionTimeout = lazy(() => import('./session/SessionTimeout.jsx'));
-
+const Scheduler =lazy(() => import('../src/projects/Scheduler.jsx'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -33,6 +34,7 @@ root.render(
           <Route path="/tasktracker" element={<TaskTracker />} />
           <Route path="/profile" element={<Profile />} />
           <Route exact path="/session-timeout" element={<SessionTimeout />} />
+          <Route path="/scheduler" element={<Scheduler />} />
         </Routes>
       </Suspense>
     </Router>

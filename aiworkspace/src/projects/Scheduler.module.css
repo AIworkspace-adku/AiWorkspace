@@ -1,0 +1,201 @@
+/* General body and page styling */
+body {
+  margin: 0;
+  padding-top: 9rem;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* General container styles */
+.schedulerContainer {
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  background: rgba(0, 0, 0, 0.5); /* Dark background with transparency */
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Title styling */
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+/* Form container styling */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputGroup label {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #f8fafc;
+}
+
+.inputField {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1); /* Transparent input field */
+  color: #f8fafc;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.inputField:focus {
+  border: 2px solid #38bdf8;
+}
+
+/* Buttons styling */
+.addButton {
+  padding: 1rem 2rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.addButton:hover {
+  background: #1d4ed8;
+}
+
+.error {
+  color: #f87171;
+  font-size: 1rem;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Schedule list styling */
+.scheduleList {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.subTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+/* Cards container */
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 cards per row */
+  gap: 2rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.scheduleItem {
+  background: rgba(255, 255, 255, 0.07); /* Glass effect */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  color: #f8fafc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.scheduleItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Action buttons in cards */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.editButton {
+  background: #38bdf8;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.editButton:hover {
+  background: #0284c7;
+}
+
+.deleteButton {
+  background: #ef4444;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.deleteButton:hover {
+  background: #b91c1c;
+}
+
+.noMeeting {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .cardsContainer {
+    grid-template-columns: repeat(3, 1fr); /* Adjust to 3 cards per row */
+  }
+}
+
+@media (max-width: 768px) {
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr); /* Adjust to 2 cards per row */
+  }
+}
+
+@media (max-width: 480px) {
+  .cardsContainer {
+    grid-template-columns: 1fr; /* Single card per row */
+  }
+}
