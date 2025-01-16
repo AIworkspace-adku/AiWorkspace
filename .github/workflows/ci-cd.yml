@@ -19,8 +19,8 @@ jobs:
     - name: Install docker-compose
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-compose-plugin
-        docker compose version  # Verify installation
+        sudo apt-get install -y docker-compose
+        docker-compose version  # Verify installation
     
     # - name: Install docker-compose
     #   run: |
@@ -65,7 +65,7 @@ jobs:
   
     - name: Push Docker Images to Docker Hub
       run: |
-        docker-compose -f docker-compose.yml push  # Push the images to Docker Hub
+        docker compose -f docker-compose.yml push  # Push the images to Docker Hub
   
     - name: Deploy to OnRender (Backend)
       run: |
