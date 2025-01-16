@@ -70,11 +70,14 @@ jobs:
 
     - name: Build Docker Images
       run: |
-        docker-compose build --no-cache
+        docker-compose build
   
-    - name: Push Docker Images
+    - name: Push frontend Docker image
       run: |
         docker push krithikpatil/aiworkspace-frontend-repo
+        
+    - name: Push backend Docker image
+      run: |    
         docker push krithikpatil/aiworkspace-backend-repo
   
     - name: Deploy to OnRender (Backend)
