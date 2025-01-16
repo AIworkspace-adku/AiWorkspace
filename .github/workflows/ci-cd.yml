@@ -58,9 +58,10 @@ jobs:
         cd aiworkspace
         npm test
     
-    - name: Build Docker Images with Docker Compose
+    - name: Install docker-compose
       run: |
-        /usr/local/bin/docker-compose -f docker-compose.yml build  # Build the Docker images for both services
+        sudo curl -L https://github.com/docker/compose/releases/download/v2.8.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
   
     - name: Push Docker Images to Docker Hub
       run: |
