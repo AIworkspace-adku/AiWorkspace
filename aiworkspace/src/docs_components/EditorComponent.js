@@ -8,7 +8,7 @@ import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 
 Quill.register('modules/cursors', QuillCursors);
-const socket = io('${process.env.REACT_APP_BACKEND_URL}');
+const socket = io(`${process.env.REACT_APP_BACKEND_URL}`);
 
 function EditorComponent({ userData, document_data, onUpdateContent }) {
     const quillRef = useRef(null);

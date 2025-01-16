@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Modules = require('./Modules');
+const Projects = require('./Projects');
 
 const teamSchema = new mongoose.Schema({
     teamName: {
@@ -61,6 +62,26 @@ teamSchema.pre('updateOne', async function (next) {
     } catch (error) {
         console.error('Error removing member from modules and tasks:', error);
         next(error); // Proceed with the error if any occurs
+    }
+});
+
+teamSchema.pre('remove', async function (next) {
+    try {
+        const teamId = this._id; // Get the teamId from the current document
+
+        // Find and delete all projects that have the teamId in the owner field
+        const projects = await Projects.find({ 'owner.teamId': teamId });
+
+        if (projects.length > 0) {
+            // Delete all projects related to this team
+            await Projects.deleteMany({ 'owner.teamId': teamId });
+            console.log(`Deleted ${projects.length} projects related to team with ID: ${teamId}`);
+        }
+
+        next(); // Proceed with the team removal
+    } catch (error) {
+        console.error('Error removing related projects:', error);
+        next(error); // Pass any error to the next middleware
     }
 });
 

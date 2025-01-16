@@ -13,6 +13,7 @@ const TeamPage = () => {
   const [projects, setProjects] = useState([]);
   const [newMemberEmail, setNewMember] = useState("");
   const [newProject, setNewProject] = useState("");
+  const [popup, setPopup] = useState({ display: false, project: null, team: null });
 
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -30,11 +31,11 @@ const TeamPage = () => {
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
-						navigate('/session-timeout');
-					}
-					else {
-						throw new Error('Failed to fetch data');
-					}
+            navigate('/session-timeout');
+          }
+          else {
+            throw new Error('Failed to fetch data');
+          }
         }
         return response.json();
       })
@@ -98,7 +99,7 @@ const TeamPage = () => {
   }
 
   // Handlers
-  const handleTeamNameUpdate = async() => {
+  const handleTeamNameUpdate = async () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTeamName`, {
         teamId,
@@ -185,9 +186,43 @@ const TeamPage = () => {
     }
   }
 
-  const removeProject = (projectId) => {
-    const updatedProjects = projects.filter((project) => project.id !== projectId);
+  const removeProject = async (projectId) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteProject`, {
+        projectId: projectId,
+      });
+
+      if (response.data) {
+        setPopup({ display: false, project: null, team: null });
+        alert('Project deleted successfully!');
+      } else {
+        console.log('Project not deleted');
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong while deleting project, try again.');
+    }
+    const updatedProjects = projects.filter((project) => project._id !== projectId);
     setProjects(updatedProjects);
+  };
+
+  const removeTeam = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteTeam`, {
+        teamId: teamId,
+      });
+
+      if (response.data) {
+        setPopup({ display: false, project: null, team: null });
+        alert('Team deleted successfully!');
+      } else {
+        console.log('Team not deleted');
+      }
+    }
+    catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong while deleting tea, try again.');
+    }
+    navigate('/dashboard');
   };
 
   return (
@@ -203,9 +238,20 @@ const TeamPage = () => {
             onChange={(e) => setTeamName(e.target.value)}
             className={styles.teamNameInput}
           />
-          <button onClick={handleTeamNameUpdate} className={styles.actionButton}>
-            <FaEdit /> Edit
-          </button>
+          <div className={styles.teamActions}>
+            <button onClick={handleTeamNameUpdate} className={styles.actionButton}>
+              <FaEdit /> Edit
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setPopup({ display: true, team: teamId });
+              }}
+              className={styles.removeButton}
+            >
+              <FaTrash />
+            </button>
+          </div>
         </div>
 
         {/* Owner Section: Owner */}
@@ -257,7 +303,18 @@ const TeamPage = () => {
                 className={styles.projectCard}
                 title={`Progress: ${project.progress}%`}
               >
-                <h4>{project.projName}</h4>
+                <div className={styles.projectHeader}>
+                  <h4>{project.projName}</h4>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPopup({ display: true, project: project });
+                    }}
+                    className={styles.removeButton}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
                 <div className={styles.progressBar}>
                   <div
                     className={styles.progressFill}
@@ -281,6 +338,33 @@ const TeamPage = () => {
           </div>
         </div>
       </div>
+      {popup.display && popup.project && (
+        <div className={styles.popup}>
+          <h4>If you delete the project all the tasks along with the members will be deleted</h4>
+          <div className={styles.popupButtons}>
+            <button onClick={() => removeProject(popup.project._id)} className={styles.deleteButton}>
+              Delete
+            </button>
+            <button onClick={() => setPopup({display: false, project: null})} className={styles.cancelButton}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {popup.display && popup.team && (
+        <div className={styles.popup}>
+          <h4>If you delete the team all the projects, tasks within the team will be deleted</h4>
+          <div className={styles.popupButtons}>
+            <button onClick={() => removeTeam()} className={styles.deleteButton}>
+              Delete
+            </button>
+            <button onClick={() => setPopup({display: false, team: null})} className={styles.cancelButton}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

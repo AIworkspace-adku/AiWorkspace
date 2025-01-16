@@ -19,7 +19,7 @@ dotenv.config();
 
 const allowedOrigins = [
 	'http://localhost:3000',
-	process.env.FRONTEND_URL
+	process.env.FRONTEND_URL,
 ];
 
 const app = express();
@@ -39,7 +39,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
 		origin: allowedOrigins, // Replace with your frontend URL if different
-		methods: ["post", "POST", "GET"]
+		methods: ["post", "POST"]
 	}
 });
 
@@ -332,10 +332,34 @@ app.post('/createTeam', async (req, res) => {
 		});
 
 		const savedTeam = await newTeam.save();
-		res.status(201).json({ message: 'Team created successfully' });
+		res.status(201).json({ message: 'Team created successfully', savedTeam: savedTeam });
 	} catch (error) {
 		console.error('Error creating team:', error);
 		res.status(500).json({ message: 'Failed to create team' });
+	}
+});
+
+app.post('/deleteTeam', async (req, res) => {
+	const { teamId } = req.body;
+
+	try {
+		const team = await Team.findByIdAndDelete(teamId);
+		if (!team) return res.status(404).json({ message: 'Team not found' });
+
+		await Modules.deleteMany({ teamId: teamId });
+
+		const deletedProjects = await Projects.find({ 'owner.teamId': teamId }); // Projects to be deleted
+		const deleteResult = await Projects.deleteMany({ 'owner.teamId': teamId });
+		
+		if (deleteResult.deletedCount > 0) {
+			const projIds = deletedProjects.map(project => project._id);
+			await Document.deleteMany({ 'owner.projId': { $in: projIds } });
+		}
+
+		res.status(200).json({ message: 'Team deleted successfully' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).send(error);
 	}
 });
 
@@ -446,6 +470,23 @@ app.post('/getProjByProjId', async (req, res) => {
 		const projects = await Projects.findById({ _id: projId });
 		res.json(projects);
 	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
+app.post('/deleteProject', async (req, res) => {
+	const { projectId } = req.body;
+
+	try {
+		const project = await Projects.findByIdAndDelete(projectId);
+		if (!project) return res.status(404).json({ message: 'Project not found' });
+
+		await Modules.deleteMany({ projId: projectId });
+		await Document.deleteMany({ 'owner.projId': projectId });
+
+		res.status(200).json({ message: 'Project deleted successfully' });
+	} catch (error) {
+		console.log(error);
 		res.status(500).send(error);
 	}
 });

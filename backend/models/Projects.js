@@ -1,5 +1,7 @@
 // User Schema
 
+const Modules = require('./Modules');
+const Document = require('./Document');
 const mongoose = require('mongoose');
 
 const projSchema = new mongoose.Schema({

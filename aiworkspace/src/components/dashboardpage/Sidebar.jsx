@@ -73,6 +73,8 @@ const Sidebar = ({ setData, userData }) => {
         });
 
       if (response.data) {
+        setShowCreateModal(false);
+        setYourTeams((prev) => [...prev, response.data.savedTeam]);
         alert('Team created successfully!');
       } else {
         console.log('Team not created');
@@ -102,6 +104,7 @@ const Sidebar = ({ setData, userData }) => {
         });
 
       if (response.data) {
+        setShowCreateModal(false);
         alert('Project created successfully!');
       } else {
         console.log('Project not created');
@@ -111,23 +114,6 @@ const Sidebar = ({ setData, userData }) => {
       console.log(error.response?.data?.message || 'Something went wrong while creating project, try again.');
     }
   }
-
-  const handleItemCreated = (newItem) => {
-    if (createContext.parentId === null) {
-      // Creating a new team
-      setYourTeams((prev) => [...prev, newItem]);
-    } else {
-      // Adding a project to a team
-      setYourTeams((prev) =>
-        prev.map((team) =>
-          team.id === createContext.parentId
-            ? { ...team, children: [...team.children, newItem] }
-            : team
-        )
-      );
-    }
-    setShowCreateModal(false);
-  };
 
   const renderProject = (project) => (
     <div className={styles.nodeContainer} key={project.id}>
@@ -269,7 +255,6 @@ const Sidebar = ({ setData, userData }) => {
                   else {
                     handleSubmitProject(name, createContext.parentId);
                   }
-                  handleItemCreated(newItem);
                 }
               }}
             />
@@ -288,7 +273,6 @@ const Sidebar = ({ setData, userData }) => {
                 else {
                   handleSubmitProject(name, createContext.parentId);
                 }
-                handleItemCreated(newItem);
               }}
             >
               Create
