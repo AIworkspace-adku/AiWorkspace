@@ -20,6 +20,8 @@ services:
     image: krithikpatil/aiworkspace-frontend-repo
     ports:
       - "3000:3000"
+    env_file:
+      - ./aiworkspace/.env
     depends_on:
       - backend
     networks:
