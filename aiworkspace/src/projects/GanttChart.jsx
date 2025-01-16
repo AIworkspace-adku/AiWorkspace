@@ -1,93 +1,69 @@
-// import React, { useState } from 'react';
-// import Timeline from 'react-gantt-timeline';
-// import { TimelineHeaders, DateHeader } from 'react-gantt-timeline';
-// import './GanttChart.css';
+import React, { Component } from 'react';
+import { gantt } from 'dhtmlx-gantt';
+import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
+import './GanttChart.css';
+import Toolbar from './Toolbar';
 
-// const initialTasks = [
-//   {
-//     id: 1,
-//     name: 'Design UI',
-//     start: new Date('2025-01-01'),
-//     end: new Date('2025-01-05'),
-//     progress: 30,
-//     members: ['Ayush', 'Krithik'],
-//   },
-//   {
-//     id: 2,
-//     name: 'Develop Backend',
-//     start: new Date('2025-01-06'),
-//     end: new Date('2025-01-12'),
-//     progress: 50,
-//     members: ['Unnati'],
-//   },
-//   {
-//     id: 3,
-//     name: 'Testing',
-//     start: new Date('2025-01-13'),
-//     end: new Date('2025-01-18'),
-//     progress: 80,
-//     members: ['Ayush'],
-//   },
-// ];
+const data = {
+  data: [
+    { id: 1, text: 'Task #1', start_date: '2019-04-15', duration: 3, progress: 0.6 },
+    { id: 2, text: 'Task #2', start_date: '2019-04-18', duration: 3, progress: 0.4 }
+  ],
+  links: [
+    { id: 1, source: 1, target: 2, type: '0' }
+  ]
+};
 
-// const GanttChart = () => {
-//   const [tasks, setTasks] = useState(initialTasks);
+export default class GanttChart extends Component {
+  state = {
+    currentZoom: 'Days'
+  };
 
-//   const handleTaskChange = (updatedTask) => {
-//     setTasks(tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
-//   };
+  handleZoomChange = (zoomLevel) => {
+    this.setState({ currentZoom: zoomLevel });
+    this.updateZoom(zoomLevel);
+  };
 
-//   const handleTaskDelete = (taskId) => {
-//     setTasks(tasks.filter((task) => task.id !== taskId));
-//   };
+  updateZoom = (zoomLevel) => {
+    const scales = {
+      Hours: {
+        scale_unit: 'hour',
+        subscales: [{ unit: 'minute', step: 30, date: '%H:%i' }],
+      },
+      Days: {
+        scale_unit: 'day',
+        subscales: [{ unit: 'hour', step: 1, date: '%H:%i' }],
+      },
+      Months: {
+        scale_unit: 'month',
+        subscales: [{ unit: 'week', step: 1, date: '%W' }],
+      },
+    };
 
-//   const addTask = () => {
-//     const newTask = {
-//       id: Date.now(),
-//       name: 'New Task',
-//       start: new Date(),
-//       end: new Date(new Date().setDate(new Date().getDate() + 3)),
-//       progress: 0,
-//       members: [],
-//     };
-//     setTasks([...tasks, newTask]);
-//   };
+    const currentScale = scales[zoomLevel];
+    gantt.config.scale_unit = currentScale.scale_unit;
+    gantt.config.subscales = currentScale.subscales;
+    gantt.render();
+  };
 
-//   return (
-//     <div className="gantt-chart-container">
-//       <header className="gantt-header">
-//         <h2>Project Gantt Chart</h2>
-//         <div className="view-options">
-//           <button className="view-btn">Weekly</button>
-//           <button className="view-btn">Monthly</button>
-//           <button onClick={addTask} className="add-task-btn">+ Add Task</button>
-//         </div>
-//       </header>
-//       <Timeline
-//         data={tasks.map((task) => ({
-//           ...task,
-//           name: (
-//             <div className="task-name-with-avatars">
-//               <span>{task.name}</span>
-//               <div className="avatars">
-//                 {task.members.map((member, index) => (
-//                   <div key={index} className="avatar" title={member}>
-//                     {member.split(' ').map((n) => n[0]).join('')}
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           ),
-//         }))}
-//         onUpdateTask={handleTaskChange}
-//         headers={<TimelineHeaders><DateHeader unit="day" /></TimelineHeaders>}
-//         onDeleteTask={handleTaskDelete}
-//         disableDrag={false}
-//         disableResize={false}
-//         rowHeight={60}
-//       />
-//     </div>
-//   );
-// };
+  componentDidMount() {
+    gantt.config.date_format = "%Y-%m-%d %H:%i";
+    gantt.init(this.ganttContainer);
+    gantt.parse(data);
+    this.updateZoom(this.state.currentZoom);
+  }
 
-// export default GanttChart;
+  render() {
+    return (
+      <div>
+        <div className="zoom-bar">
+          <Toolbar zoom={this.state.currentZoom} onZoomChange={this.handleZoomChange} />
+        </div>
+        <div
+          ref={(input) => { this.ganttContainer = input; }}
+          style={{ width: '100%', height: '500px' }}
+        ></div>
+      </div>
+    );
+  }
+}
