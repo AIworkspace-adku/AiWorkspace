@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { FaComments, FaVideo, FaTasks, FaFileAlt, FaLightbulb, FaRobot } from "react-icons/fa";
 import Sidebar from "../components/dashboardpage/Sidebar.jsx"; // Ensure Sidebar is consistent
 import TaskTracker from "../Tasks/TaskTracker.jsx"; // Import your task tracker component
@@ -35,12 +36,25 @@ const ProjectPage = () => {
         return response.json();
       })
       .then((data) => {
+        updateLastAccess();
         setData(data);
       })
       .catch((error) => {
         console.log(error);
         setError(error.message);
       });
+
+      const updateLastAccess = () => {
+        console.log("Updating last access");
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/${projectId}/last-access`)
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            setError(error.message);
+          });
+      }
   }, []);
 
   if (!data || !projectId) {
@@ -113,14 +127,14 @@ const ProjectPage = () => {
             }`}
             onClick={() => setActiveTab("gpt")}
           >
+            <FaRobot /> GPT
+          </button>
           <button
             className={`${styles.navButton} ${
               activeTab === "scheduler" ? styles.active : ""
             }`}
             onClick={() => setActiveTab("scheduler")}
-          ></button>
-            <FaRobot /> GPT
-          </button>
+          >Scheduler</button>
         </div>
 
         {/* Dynamic Page Content */}

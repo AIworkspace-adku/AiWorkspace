@@ -24,10 +24,18 @@ const projSchema = new mongoose.Schema({
             type: String,
         }
     },
+    progress: {
+        type: Number,
+        default: 0
+    },
     creationDate: {
         type: Date,
         default: Date.now
-    }
+    },
+    lastAccess: {
+        type: Date,
+        default: Date.now
+    },
 });
 
 // Create the User model from the schema

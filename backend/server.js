@@ -491,6 +491,65 @@ app.post('/deleteProject', async (req, res) => {
 	}
 });
 
+app.post(`/projects/:projectId/last-access`, async (req, res) => {
+	const { projectId } = req.params;
+
+	try {
+		if (!mongoose.Types.ObjectId.isValid(projectId)) {
+			return res.status(400).json({ message: 'Invalid projectId format' });
+		}
+		const project = await Projects.findById(projectId);
+		if (!project) return res.status(404).json({ message: 'Project not found' });
+
+		project.lastAccess = new Date();
+		await project.save();
+
+		res.status(200).json({ message: 'Last access updated successfully' });
+	} catch (error) {
+		console.log(error);
+		res.status(500).send(error);
+	}
+});
+
+app.post('/recentProjects', async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		// Find all teams where the user is a member
+        const userTeams = await Team.find({
+			$or: [
+				{ 'owner.email': email }, // User is the owner of the team
+            	{ 'members': { $elemMatch: { email: email } } } // User is a member of the team
+			]
+        }).select('_id'); // Select only the team IDs
+
+        if (userTeams.length === 0) {
+            return res.status(404).json({ message: 'User is not part of any team' });
+        }
+
+        // Extract team IDs
+        const teamIds = userTeams.map(team => team._id);
+
+        // Fetch projects where the user is either the owner or a member of the team
+        const recentProjects = await Projects.find({
+            $or: [
+                { 'owner.email': email }, // User is the owner
+                { 'owner.teamId': { $in: teamIds } } // User is part of the team (teamId matches)
+            ]
+        })
+        .sort({ lastAccess: -1 })  // Sort by lastAccess in descending order
+        .limit(3);  // Limit to the top 5 most recently accessed projects
+
+        if (recentProjects.length === 0) {
+            return res.status(404).json({ message: 'No projects found for this user' });
+        }
+
+        res.status(200).json({ recentProjects });
+	} catch (error) {
+		res.status(500).send(error);
+	}
+});
+
 app.post('/removeMemberFromTeam', async (req, res) => {
 	const { teamId, memberEmail } = req.body;
 
@@ -564,7 +623,6 @@ app.post('/updateModule', async (req, res) => {
 	try {
 		const module = await Modules.findById(moduleId);
 		if (!module) return res.status(404).json({ message: 'Module not found' });
-		console.log(moduleName, assignedTo);
 
 		if (moduleName !== '') {
 			module.moduleName = moduleName;
@@ -646,6 +704,7 @@ app.post('/updateTask', async (req, res) => {
 		}
 
 		await module.save();
+		updateProgress(module.projId);
 
 		const updatedTask = module.tasks.find(t => t._id.toString() === taskId);
 		return res.status(200).json({ message: 'Task updated successfully', updatedTask: updatedTask });
@@ -655,6 +714,30 @@ app.post('/updateTask', async (req, res) => {
 		res.status(500).json({ message: 'Failed to update task' });
 	}
 });
+
+const updateProgress = async (projectId) => {
+	const module = await Modules.find({ projId: projectId });
+	let totalTasks = 0;
+
+	module.forEach(m => {
+		totalTasks += m.tasks.length;
+	});
+
+	let completedTasks = 0;
+
+	module.forEach(m => {
+		m.tasks.forEach(t => {
+			if (t.status) {
+				completedTasks++;
+			}
+		});
+	});
+
+	const progress = (completedTasks / totalTasks) * 100;
+
+	const project = await Projects.findByIdAndUpdate(projectId, { progress: progress });
+	return project;
+};
 
 app.post('/deleteTask', async (req, res) => {
 	const { moduleId, taskId } = req.body;

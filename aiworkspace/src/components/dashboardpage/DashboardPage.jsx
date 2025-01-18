@@ -46,7 +46,7 @@ const DashboardPage = () => {
 	return (
 		<div className={styles.dashboardContainer}>
 			<Sidebar setData={setData} userData={data} />
-			<MainContent userName={data.username} />
+			<MainContent userData={data} />
 		</div>
 	);
 };

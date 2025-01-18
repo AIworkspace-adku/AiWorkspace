@@ -4,7 +4,7 @@ import ProjectCards from './ProjectCards.jsx';
 import TasksSection from './TasksSection.jsx';
 import ScheduleSection from './ScheduleSection.jsx';
 
-const MainContent = ({ userName }) => {
+const MainContent = ({ userData }) => {
   const [tasks, setTasks] = useState([]);
   const [schedule, setSchedule] = useState([]);
 
@@ -29,7 +29,7 @@ const MainContent = ({ userName }) => {
       { time: '16:00', activity: 'Wrap Up' }
     ];
     setSchedule(todaySchedule);
-  }, [userName]);
+  }, [userData]);
 
   // Handlers for tasks
   const handleAddTask = () => {
@@ -52,12 +52,12 @@ const MainContent = ({ userName }) => {
 
   return (
     <div className={styles.mainContent}>
-      <h2 className={styles.greeting}>Welcome back, {userName}</h2>
+      <h2 className={styles.greeting}>Welcome back, {userData.username}</h2>
 
       {/* Project Cards in glass morph card */}
       <div className={styles.projectsSection}>
         <h3>Recently Worked On</h3>
-        <ProjectCards />
+        <ProjectCards userData = {userData} />
       </div>
 
       {/* Bottom section: Tasks (non-glass), Schedule (glass morph) */}
