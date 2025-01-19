@@ -2,19 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './ProjectCards.module.css';
 
-const dummyProjects = [
-  { name: "Project Alpha", progress: 40 },
-  { name: "Project Beta", progress: 75 },
-  { name: "Project Gamma", progress: 20 },
-];
-
 const ProjectCards = ({ userData }) => {
 
   const [recentProjects, setProjects] = useState([]);
 
   useEffect(() => {
     try {
-      axios.post(`${process.env.REACT_APP_BACKEND_URL}/recentProjects`, {
+      axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/recentProjects`, {
         email: userData.email,
       })
         .then((response) => {

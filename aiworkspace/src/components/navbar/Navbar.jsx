@@ -11,7 +11,7 @@ const Navbar = ({ setData, data }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, {}, { withCredentials: true });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {}, { withCredentials: true });
       localStorage.removeItem('authToken');
       setData(null);
       alert('Logged out successfully!');

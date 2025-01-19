@@ -14,8 +14,6 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
     const quillRef = useRef(null);
     const resizeObserverRef = useRef(null);
     const [editorSize, setEditorSize] = useState('normal');
-    const [showAddMemberPopup, setShowAddMemberPopup] = useState(false);
-    const [newMemberEmail, setNewMemberEmail] = useState('');
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
@@ -281,31 +279,6 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
         setEditorSize(e.target.value);
     };
 
-    const handleAddMember = async () => {
-        setShowAddMemberPopup(false); // Close the popup
-
-        if (!newMemberEmail) return;
-
-        try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/addMember`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    documentId: document_data.id,
-                    memberEmail: newMemberEmail,
-                }),
-            });
-
-            if (response.ok) {
-                alert('Member added successfully!');
-            } else {
-                alert('Failed to add member.');
-            }
-        } catch (error) {
-            console.error('Error adding member:', error);
-        }
-    };
-
     const getEditorStyle = () => {
         const styles = {
             small: { height: '300px' },
@@ -318,7 +291,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
 
     return (
         <div className={`editor-container ${editorSize === 'full' ? 'full-screen' : ''}`} style={getEditorStyle()}>
-            <EditorToolbar onSizeChange={setEditorSize} onAddMember={setShowAddMemberPopup} />
+            <EditorToolbar onSizeChange={setEditorSize} />
 
             <div className="document-info">
                 <p>Last Edited By: <strong>{lastEditor}</strong></p>
@@ -345,21 +318,6 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
                         placeholder="Response will appear here"
                     />
                     <button className='ai-query-popup-button' onClick={insertResponse}>Insert in document</button>
-                </div>
-            )}
-            {showAddMemberPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h3>Add Member</h3>
-                        <input
-                            type="email"
-                            placeholder="Enter email"
-                            value={newMemberEmail}
-                            onChange={(e) => setNewMemberEmail(e.target.value)}
-                        />
-                        <button onClick={handleAddMember}>Add</button>
-                        <button onClick={() => setShowAddMemberPopup(false)}>Cancel</button>
-                    </div>
                 </div>
             )}
         </div>

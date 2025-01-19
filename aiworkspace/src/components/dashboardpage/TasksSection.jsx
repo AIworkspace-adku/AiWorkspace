@@ -9,7 +9,7 @@ const TasksSection = ({ userData }) => {
 
   useEffect(() => {
     try {
-      axios.post("http://localhost:5000/fetchTasks", {
+      axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/fetchTasks`, {
         email: userData.email,
       })
         .then((response) => {
@@ -38,7 +38,7 @@ const TasksSection = ({ userData }) => {
   // Toggle task completion
   const handleUpdateTask = async (id, moduleId, status, statusUpdate) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTask`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/updateTask`, {
         moduleId: moduleId,
         taskId: id,
         taskName: editTaskName,
@@ -77,7 +77,7 @@ const TasksSection = ({ userData }) => {
   // Delete a task
   const handleDeleteTask = async (moduleId, taskId) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteTask`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/deleteTask`, {
         moduleId: moduleId,
         taskId: taskId,
       })
@@ -162,6 +162,10 @@ const TasksSection = ({ userData }) => {
             </div>
           </li>
         ))}
+
+        {tasks.length === 0 && (
+          <h4>No tasks assigned to you</h4>
+        )}
       </ul>
     </div>
   );

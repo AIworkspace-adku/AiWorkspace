@@ -42,8 +42,6 @@ function WelcomeScreen({ onCreateDocument, username }) {
 
 function App_docs(projId) {
     const projectId = projId.projId;
-    const [projects, setProjects] = useState([]);
-    const [teamId, setTeamId] = useState('');
     const [documents, setDocuments] = useState([]);
     const [currentDoc, setCurrentDoc] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -56,12 +54,11 @@ function App_docs(projId) {
     // Fetch user data and documents
     useEffect(() => {
         fetchUserData();
-        fetchProjData();
     }, []);
 
     const fetchUserData = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
                 method: 'POST',
                 credentials: 'include',
                 withCredentials: true,
@@ -76,25 +73,6 @@ function App_docs(projId) {
             fetchDocuments(userData.email);
         } catch (error) {
             setError(error.message);
-        }
-    };
-
-    const fetchProjData = async () => {
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getProjByProjId`, {
-                projId: projectId,
-            });
-
-            if (response.data) {
-                console.log(response.data.owner.teamId);
-                setTeamId(response.data.owner.teamId);
-                setProjects(response.data);
-                // setProjects(response.data.team.projects);
-            } else {
-                console.log('No teams found');
-            }
-        } catch (error) {
-            console.log(error.response?.data?.message || 'Something went wrong, try again.');
         }
     };
 

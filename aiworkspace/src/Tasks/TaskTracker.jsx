@@ -25,7 +25,7 @@ const TaskTracker = ({ projId, userData }) => {
 
     const fetchMembers = async () => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchMembersUsingProjId`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/fetchMembersUsingProjId`, {
                 projId: projectId,
             })
 
@@ -45,7 +45,7 @@ const TaskTracker = ({ projId, userData }) => {
 
     const fetchModules = async () => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchModules`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/fetchModules`, {
                 projId: projectId,
             })
 
@@ -81,7 +81,7 @@ const TaskTracker = ({ projId, userData }) => {
     const handleAddModule = async () => {
         if (!newModule.trim()) return;
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/addModule`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/addModule`, {
                 teamId: teamId,
                 projId: projectId,
                 moduleName: newModule,
@@ -107,7 +107,7 @@ const TaskTracker = ({ projId, userData }) => {
         if (!newTask.trim()) return;
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/addTask`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/addTask`, {
                 moduleId: moduleId,
                 projId: projectId,
                 taskName: newTask,
@@ -143,7 +143,7 @@ const TaskTracker = ({ projId, userData }) => {
 
     const handleUpdateModule = async (moduleId) => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateModule`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/updateModule`, {
                 moduleId: moduleId,
                 moduleName: newModule,
                 assignedTo: assignedTo,
@@ -172,7 +172,7 @@ const TaskTracker = ({ projId, userData }) => {
 
     const handleDeleteModule = async (moduleId) => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteModule`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/deleteModule`, {
                 moduleId: moduleId,
             })
             if (response.data.deletedModule) {
@@ -190,7 +190,7 @@ const TaskTracker = ({ projId, userData }) => {
     const handleUpdateTask = async (moduleId, taskId, status, statusUpdate) => {
         console.log(moduleId);
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTask`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/updateTask`, {
                 moduleId: moduleId,
                 taskId: taskId,
                 taskName: newTask,
@@ -227,7 +227,7 @@ const TaskTracker = ({ projId, userData }) => {
 
     const handleRemoveTask = async (moduleId, taskId) => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteTask`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/modTask/deleteTask`, {
                 moduleId: moduleId,
                 taskId: taskId,
             })

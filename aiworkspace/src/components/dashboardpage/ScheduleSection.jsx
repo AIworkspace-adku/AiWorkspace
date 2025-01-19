@@ -25,7 +25,7 @@ const ScheduleSection = ({ userData }) => {
 
   const fetchMeets = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchTodaySchedule`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/fetchTodaySchedule`, {
         email: userData.email
       })
       if (response.data) {
@@ -80,7 +80,7 @@ const ScheduleSection = ({ userData }) => {
 
   const saveEdits = async (id, date, reminder, reminderUpdate) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateMeeting`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/updateMeeting`, {
         meetingId: id,
         date: date,
         time: editedTime,

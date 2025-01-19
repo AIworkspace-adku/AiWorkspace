@@ -13,7 +13,7 @@ const DashboardPage = () => {
 
 	useEffect(() => {
 		// Fetch data from the protected route
-		fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
+		fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
 			method: 'POST',
 			credentials: 'include',
 			withCredentials: true, // Include cookies in the request

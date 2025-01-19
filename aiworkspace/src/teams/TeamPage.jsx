@@ -23,7 +23,7 @@ const TeamPage = () => {
 
   useEffect(() => {
     // Fetch data from the protected route
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/protected`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
       method: 'POST',
       credentials: 'include',
       withCredentials: true, // Include cookies in the request
@@ -53,7 +53,7 @@ const TeamPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getTeamById`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/getTeamById`, {
           teamId,
         });
 
@@ -76,7 +76,7 @@ const TeamPage = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/getProjByTeamId`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/getProjByTeamId`, {
           teamId,
         });
 
@@ -101,7 +101,7 @@ const TeamPage = () => {
   // Handlers
   const handleTeamNameUpdate = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTeamName`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/updateTeamName`, {
         teamId,
         teamName,
       });
@@ -123,7 +123,7 @@ const TeamPage = () => {
       return;
     }
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/addMemberToTeam`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/addMemberToTeam`, {
         teamId,
         newMemberEmail,
       });
@@ -143,7 +143,7 @@ const TeamPage = () => {
   const removeMember = (member) => {
 
     try {
-      const response = axios.post(`${process.env.REACT_APP_BACKEND_URL}/removeMemberFromTeam`, {
+      const response = axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/removeMemberFromTeam`, {
         teamId,
         memberEmail: member.email,
       });
@@ -163,7 +163,7 @@ const TeamPage = () => {
 
   const handleSubmitProject = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/createProject`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/createProject`, {
         projName: newProject,
         teamId,
         owner: owner,
@@ -188,7 +188,7 @@ const TeamPage = () => {
 
   const removeProject = async (projectId) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteProject`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/deleteProject`, {
         projectId: projectId,
       });
 
@@ -208,7 +208,7 @@ const TeamPage = () => {
 
   const removeTeam = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteTeam`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/deleteTeam`, {
         teamId: teamId,
       });
 

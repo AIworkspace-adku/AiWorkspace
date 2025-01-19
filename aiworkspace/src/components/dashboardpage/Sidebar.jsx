@@ -19,7 +19,7 @@ const Sidebar = ({ setData, userData }) => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchTeams`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/fetchTeams`, {
           owner,
         });
 
@@ -43,7 +43,7 @@ const Sidebar = ({ setData, userData }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, {}, { withCredentials: true });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {}, { withCredentials: true });
       localStorage.removeItem('authToken');
       setData(null);
       alert('Logged out successfully!');
@@ -64,7 +64,7 @@ const Sidebar = ({ setData, userData }) => {
 
   const handleTeamSubmit = async (teamName) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/createTeam`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/teams/createTeam`, {
         teamName,
         owner,
         ownerName: userName
@@ -93,7 +93,7 @@ const Sidebar = ({ setData, userData }) => {
 
   const handleSubmitProject = async (projName, teamId) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/createProject`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/projects/createProject`, {
         projName: projName,
         teamId,
         owner,

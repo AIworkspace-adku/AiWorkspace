@@ -16,7 +16,7 @@ const Scheduler = ({ projectId }) => {
 
   useEffect(() => {
     try {
-      axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchMeets`, {
+      axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/fetchMeets`, {
         projId: projectId
       })
         .then((response) => {
@@ -54,7 +54,7 @@ const Scheduler = ({ projectId }) => {
     if (editIndex !== null) {
       // Update existing meeting
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateMeeting`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/updateMeeting`, {
           meetingId: editIndex,
           date: date,
           time: time,
@@ -77,7 +77,7 @@ const Scheduler = ({ projectId }) => {
     } else {
       // Add new meeting
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/addMeeting`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/addMeeting`, {
           projId: projectId,
           date: date,
           time: time,
@@ -106,7 +106,7 @@ const Scheduler = ({ projectId }) => {
   // Delete handler
   const handleDelete = async (meetingId) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteMeeting`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/meeting/deleteMeeting`, {
         meetingId: meetingId
       })
       if (response.data) {
