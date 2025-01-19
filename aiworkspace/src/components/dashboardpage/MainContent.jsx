@@ -65,13 +65,14 @@ const MainContent = ({ userData }) => {
         <div className={styles.tasksWrapper}>
           <TasksSection 
             tasks={tasks}
+            userData={userData}
             onAddTask={handleAddTask}
             onUpdateTask={handleUpdateTask}
             onRemoveTask={handleRemoveTask}
           />
         </div>
         <div className={styles.scheduleWrapper}>
-          <ScheduleSection schedule={schedule} />
+          <ScheduleSection schedule={schedule} userData = {userData} />
         </div>
       </div>
     </div>

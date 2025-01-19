@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { FaPlus, FaEdit, FaTrash, FaCheck } from "react-icons/fa";
 import styles from "./TasksSection.module.css";
 
-const TasksSection = () => {
-  const [tasks, setTasks] = useState([
-    { id: 1, task: "Complete UI Mockups", done: false },
-    { id: 2, task: "Fix Navbar Bug", done: false },
-    { id: 3, task: "Prepare Backend Routes", done: true },
-  ]);
+const TasksSection = ({ userData }) => {
+
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    try {
+      axios.post("http://localhost:5000/fetchTasks", {
+        email: userData.email,
+      })
+        .then((response) => {
+          setTasks(response.data.tasks);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [userData]);
 
   const [newTaskName, setNewTaskName] = useState("");
   const [editTaskId, setEditTaskId] = useState(null);
@@ -22,33 +36,62 @@ const TasksSection = () => {
   };
 
   // Toggle task completion
-  const handleToggleDone = (id) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === id ? { ...task, done: !task.done } : task
-    );
-    setTasks(updatedTasks);
+  const handleUpdateTask = async (id, moduleId, status, statusUpdate) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateTask`, {
+        moduleId: moduleId,
+        taskId: id,
+        taskName: editTaskName,
+        assignedTo: [],
+        status: status,
+        statusUpdate: statusUpdate,
+      })
+
+      if (response.data.updatedTask) {
+        setTasks(
+          tasks.map((task) =>
+            task._id === id
+              ? response.data.updatedTask
+              : task
+          )
+        );
+
+        setEditTaskId(null);
+        setEditTaskName("");
+      }
+      else {
+        console.log("No task found");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
   };
 
   // Edit a task
   const handleEditTask = (task) => {
-    setEditTaskId(task.id);
-    setEditTaskName(task.task);
-  };
-
-  // Save edited task
-  const handleSaveEditTask = () => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === editTaskId ? { ...task, task: editTaskName } : task
-    );
-    setTasks(updatedTasks);
-    setEditTaskId(null);
-    setEditTaskName("");
+    setEditTaskId(task._id);
+    setEditTaskName(task.taskName);
   };
 
   // Delete a task
-  const handleDeleteTask = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
+  const handleDeleteTask = async (moduleId, taskId) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/deleteTask`, {
+        moduleId: moduleId,
+        taskId: taskId,
+      })
+
+      if (response.data.deletedTask) {
+        setTasks(tasks.filter((task) => task._id !== taskId))
+      }
+      else {
+        console.log("No modules found");
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -71,17 +114,17 @@ const TasksSection = () => {
       <ul className={styles.taskList}>
         {tasks.map((task) => (
           <li
-            key={task.id}
-            className={`${styles.taskItem} ${task.done && styles.completed}`}
+            key={task._id}
+            className={`${styles.taskItem} ${task.status && styles.completed}`}
           >
             <div className={styles.taskContent}>
               <input
                 type="checkbox"
-                checked={task.done}
-                onChange={() => handleToggleDone(task.id)}
+                checked={task.status}
+                onChange={() => handleUpdateTask(task._id, task.owner.moduleId, !task.status, true)}
                 className={styles.checkbox}
               />
-              {editTaskId === task.id ? (
+              {editTaskId === task._id ? (
                 <input
                   type="text"
                   value={editTaskName}
@@ -89,13 +132,13 @@ const TasksSection = () => {
                   className={styles.editInput}
                 />
               ) : (
-                <span className={styles.taskName}>{task.task}</span>
+                <span className={styles.taskName}>{task.taskName}</span>
               )}
             </div>
             <div className={styles.taskActions}>
-              {editTaskId === task.id ? (
+              {editTaskId === task._id ? (
                 <button
-                  onClick={handleSaveEditTask}
+                  onClick={() => handleUpdateTask(task._id, task.owner.moduleId, false, false)}
                   className={styles.actionButton}
                 >
                   <FaCheck />
@@ -109,7 +152,7 @@ const TasksSection = () => {
                     <FaEdit />
                   </button>
                   <button
-                    onClick={() => handleDeleteTask(task.id)}
+                    onClick={() => handleDeleteTask(task.owner.moduleId, task._id)}
                     className={styles.actionButton}
                   >
                     <FaTrash />

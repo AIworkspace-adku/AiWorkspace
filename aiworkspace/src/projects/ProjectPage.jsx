@@ -72,7 +72,7 @@ const ProjectPage = () => {
       case "gpt":
         return <Gpt />;
         case "scheduler":
-          return <Scheduler />;
+          return <Scheduler projectId = {projectId} />;
       default:
         return <div>Select an option from the navbar</div>;
     }

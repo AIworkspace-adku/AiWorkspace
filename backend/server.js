@@ -13,6 +13,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Schedule = require('./models/Schedule');
 
 // Load environment variables
 dotenv.config();
@@ -350,7 +351,7 @@ app.post('/deleteTeam', async (req, res) => {
 
 		const deletedProjects = await Projects.find({ 'owner.teamId': teamId }); // Projects to be deleted
 		const deleteResult = await Projects.deleteMany({ 'owner.teamId': teamId });
-		
+
 		if (deleteResult.deletedCount > 0) {
 			const projIds = deletedProjects.map(project => project._id);
 			await Document.deleteMany({ 'owner.projId': { $in: projIds } });
@@ -516,35 +517,35 @@ app.post('/recentProjects', async (req, res) => {
 
 	try {
 		// Find all teams where the user is a member
-        const userTeams = await Team.find({
+		const userTeams = await Team.find({
 			$or: [
 				{ 'owner.email': email }, // User is the owner of the team
-            	{ 'members': { $elemMatch: { email: email } } } // User is a member of the team
+				{ 'members': { $elemMatch: { email: email } } } // User is a member of the team
 			]
-        }).select('_id'); // Select only the team IDs
+		}).select('_id'); // Select only the team IDs
 
-        if (userTeams.length === 0) {
-            return res.status(404).json({ message: 'User is not part of any team' });
-        }
+		if (userTeams.length === 0) {
+			return res.status(404).json({ message: 'User is not part of any team' });
+		}
 
-        // Extract team IDs
-        const teamIds = userTeams.map(team => team._id);
+		// Extract team IDs
+		const teamIds = userTeams.map(team => team._id);
 
-        // Fetch projects where the user is either the owner or a member of the team
-        const recentProjects = await Projects.find({
-            $or: [
-                { 'owner.email': email }, // User is the owner
-                { 'owner.teamId': { $in: teamIds } } // User is part of the team (teamId matches)
-            ]
-        })
-        .sort({ lastAccess: -1 })  // Sort by lastAccess in descending order
-        .limit(3);  // Limit to the top 5 most recently accessed projects
+		// Fetch projects where the user is either the owner or a member of the team
+		const recentProjects = await Projects.find({
+			$or: [
+				{ 'owner.email': email }, // User is the owner
+				{ 'owner.teamId': { $in: teamIds } } // User is part of the team (teamId matches)
+			]
+		})
+			.sort({ lastAccess: -1 })  // Sort by lastAccess in descending order
+			.limit(3);  // Limit to the top 5 most recently accessed projects
 
-        if (recentProjects.length === 0) {
-            return res.status(404).json({ message: 'No projects found for this user' });
-        }
+		if (recentProjects.length === 0) {
+			return res.status(404).json({ message: 'No projects found for this user' });
+		}
 
-        res.status(200).json({ recentProjects });
+		res.status(200).json({ recentProjects });
 	} catch (error) {
 		res.status(500).send(error);
 	}
@@ -655,6 +656,48 @@ app.post('/deleteModule', async (req, res) => {
 	}
 });
 
+app.post('/fetchTasks', async (req, res) => {
+	const { email } = req.body;
+	try {
+
+		const userTeams = await Team.find({
+			$or: [
+				{ 'owner.email': email }, // User is the owner of the team
+				{ 'members': { $elemMatch: { email: email } } } // User is a member of the team
+			]
+		}).select('_id'); // Select only the team IDs
+
+		if (userTeams.length === 0) {
+			return res.status(404).json({ message: 'User is not part of any team' });
+		}
+
+		// Extract team IDs
+		const teamIds = userTeams.map(team => team._id);
+
+		const modules = await Modules.find({
+			'tasks.assignedTo.email': email,
+			'teamId': { $in: teamIds }
+		})
+			.select('tasks')
+			.lean();
+
+		const userTasks = modules.reduce((tasks, module) => {
+			// Filter tasks assigned to the user in this module
+			const assignedTasks = module.tasks.filter(task =>
+				task.assignedTo.some(user => user.email === email)
+			);
+			return tasks.concat(assignedTasks); // Combine the tasks from each module
+		}, []);
+
+		// Return the tasks assigned to the user
+		res.status(200).json({ tasks: userTasks });
+	}
+	catch (error) {
+		console.error('Error fetching tasks:', error);
+		res.status(500).json({ message: 'Failed to fetch tasks' });
+	}
+});
+
 app.post('/addTask', async (req, res) => {
 	const { moduleId, projId, taskName, assignedTo } = req.body;
 
@@ -672,6 +715,7 @@ app.post('/addTask', async (req, res) => {
 		const module = await Modules.findById(moduleId);
 		module.tasks.push(newTask);
 		await module.save();
+		updateProgress(module.projId);
 
 		const savedTask = module.tasks[module.tasks.length - 1];
 		res.status(201).json({ savedTask: savedTask, message: 'Task created successfully' });
@@ -750,6 +794,7 @@ app.post('/deleteTask', async (req, res) => {
 
 		module.tasks = module.tasks.filter(t => t._id.toString() !== taskId);
 		await module.save();
+		updateProgress(module.projId)
 
 		return res.status(200).json({ message: 'Task deleted successfully', deletedTask: task });
 	}
@@ -776,6 +821,131 @@ const authenticate = (req, res, next) => {
 		return res.status(403).json({ error: 'Invalid or malformed token' });
 	}
 };
+
+app.post('/addMeeting', async (req, res) => {
+	const { projId, date, time, moto } = req.body;
+
+	try {
+		const project = await Projects.findById(projId);
+		if (!project) return res.status(400).json({ message: "Project was not found" });
+
+		const teamId = project.owner.teamId;
+
+		const newMeeting = new Schedule({
+			moto: moto,
+			teamId: teamId,
+			projId: projId,
+			date: date,
+			time: time,
+		})
+
+		const savedMeeting = await newMeeting.save();
+
+		return res.status(200).json({ message: "Meeting scheduled successfully", savedMeeting: savedMeeting });
+	}
+
+	catch (error) {
+		console.log(error);
+		return res.status(500).json({ message: "Error creating meeting" });
+	}
+});
+
+app.post('/updateMeeting', async (req, res) => {
+	const { meetingId, date, time, moto, reminder, reminderUpdate } = req.body;
+
+	try {
+		let updatedMeet = null;
+		if (!reminderUpdate) {
+			updatedMeet = await Schedule.findByIdAndUpdate(meetingId, {
+				moto: moto,
+				date: date,
+				time: time,
+			},
+				{ new: true }
+			);
+		}
+		else {
+			updatedMeet = await Schedule.findByIdAndUpdate(meetingId, {
+				reminder: reminder
+			},
+				{ new: true }
+			);
+		}
+		if (!updatedMeet) return res.status(400).json({ message: "Meeting was not found" });
+
+		return res.status(200).json({ message: "Meeting updated successfully", updatedMeet: updatedMeet });
+	}
+
+	catch (error) {
+		console.log(error);
+		return res.status(500).json({ message: "Error updating meeting" });
+	}
+});
+
+app.post('/deleteMeeting', async (req, res) => {
+	const { meetingId } = req.body;
+
+	try {
+		const deletedMeet = await Schedule.findOneAndDelete({ _id: meetingId });
+		if (!deletedMeet) return res.status(404).json({ message: "Meet not found" });
+
+		return res.status(200).json({ message: "Meet deleted" });
+	}
+	catch (error) {
+		console.log(error);
+		return res.status(500).json({ message: "Error deleting meet" });
+	}
+});
+
+app.post('/fetchMeets', async (req, res) => {
+	const { projId } = req.body;
+
+	try {
+		const schedules = await Schedule.find({ projId: projId });
+
+		return res.status(200).json({ message: "Meetings retrieved successfully", schedules: schedules });
+	}
+	catch (error) {
+		console.log(error);
+	}
+})
+
+app.post('/fetchTodaySchedule', async (req, res) => {
+	const { email } = req.body;
+
+	try {
+		const userTeams = await Team.find({
+			$or: [
+				{ 'owner.email': email }, // User is the owner of the team
+				{ 'members': { $elemMatch: { email: email } } } // User is a member of the team
+			]
+		}).select('_id'); // Select only the team IDs
+
+		if (userTeams.length === 0) {
+			return res.status(404).json({ message: 'User is not part of any team' });
+		}
+
+		// Extract team IDs
+		const teamIds = userTeams.map(team => team._id);
+
+		const today = new Date().toISOString().split('T')[0]; // Format: 'YYYY-MM-DD'
+
+		// Find meetings scheduled for today
+		const todayMeetings = await Schedule.find({
+			teamId: { $in: teamIds }, // Filter by team IDs
+			date: today // Match today's date in string format
+		});
+
+		if (todayMeetings.length === 0) {
+			return res.status(404).json({ message: 'No meetings scheduled for today' });
+		}
+
+		return res.status(200).json({ schedule: todayMeetings });
+	}
+	catch (error) {
+		return res.status(500).json({ message: "Error fetching todays schedule" });
+	}
+});
 
 // Example protected route
 app.post('/protected', authenticate, (req, res) => {

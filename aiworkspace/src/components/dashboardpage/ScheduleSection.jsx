@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import { FaEdit, FaCheck, FaBell, FaBellSlash } from "react-icons/fa";
 import styles from "./ScheduleSection.module.css";
 
-const ScheduleSection = () => {
-  const [schedule, setSchedule] = useState([
-    { id: 1, time: "19:45", activity: "Team Standup", reminder: true },
-    { id: 2, time: "11:00", activity: "Client Meeting", reminder: false },
-    { id: 3, time: "14:00", activity: "Development Work", reminder: false },
-  ]);
+const ScheduleSection = ({ userData }) => {
+  const [schedule, setSchedule] = useState([]);
 
   const [editingId, setEditingId] = useState(null);
   const [editedTime, setEditedTime] = useState("");
@@ -21,6 +18,24 @@ const ScheduleSection = () => {
       Notification.requestPermission();
     }
   }, []);
+
+  useEffect(() => {
+    fetchMeets();
+  }, [userData]);
+
+  const fetchMeets = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/fetchTodaySchedule`, {
+        email: userData.email
+      })
+      if (response.data) {
+        setSchedule(response.data.schedule);
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   // Function to check and trigger reminders
   useEffect(() => {
@@ -51,26 +66,38 @@ const ScheduleSection = () => {
   const toggleReminder = (id) => {
     setSchedule(
       schedule.map((item) =>
-        item.id === id ? { ...item, reminder: !item.reminder } : item
+        item._id === id ? { ...item, reminder: !item.reminder } : item
       )
     );
   };
 
   // Edit Schedule
   const startEditing = (item) => {
-    setEditingId(item.id);
+    setEditingId(item._id);
     setEditedTime(item.time);
-    setEditedActivity(item.activity);
+    setEditedActivity(item.moto);
   };
 
-  const saveEdits = (id) => {
-    setSchedule(
-      schedule.map((item) =>
-        item.id === id
-          ? { ...item, time: editedTime, activity: editedActivity }
-          : item
-      )
-    );
+  const saveEdits = async (id, date, reminder, reminderUpdate) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/updateMeeting`, {
+        meetingId: id,
+        date: date,
+        time: editedTime,
+        moto: editedActivity,
+        reminder: reminder,
+        reminderUpdate: reminderUpdate
+      })
+      if (response.data) {
+        const updatedSchedule = schedule.map((meet) =>
+          meet._id === id ? response.data.updatedMeet : meet
+        );
+        setSchedule(updatedSchedule);
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
     setEditingId(null);
   };
 
@@ -79,8 +106,8 @@ const ScheduleSection = () => {
       <h3>Today's Schedule</h3>
       <ul className={styles.scheduleList}>
         {schedule.map((item) => (
-          <li key={item.id} className={styles.scheduleItem}>
-            {editingId === item.id ? (
+          <li key={item._id} className={styles.scheduleItem}>
+            {editingId === item._id ? (
               <>
                 <input
                   type="time"
@@ -96,7 +123,7 @@ const ScheduleSection = () => {
                   placeholder="Edit Activity"
                 />
                 <button
-                  onClick={() => saveEdits(item.id)}
+                  onClick={() => saveEdits(item._id, item.date, false, false)}
                   className={styles.saveButton}
                 >
                   <FaCheck size={24} />
@@ -105,7 +132,7 @@ const ScheduleSection = () => {
             ) : (
               <>
                 <span className={styles.time}>{item.time}</span>
-                <span className={styles.activity}>{item.activity}</span>
+                <span className={styles.activity}>{item.moto}</span>
                 <div className={styles.actions}>
                   <button
                     onClick={() => startEditing(item)}
@@ -114,7 +141,7 @@ const ScheduleSection = () => {
                     <FaEdit size={24} />
                   </button>
                   <button
-                    onClick={() => toggleReminder(item.id)}
+                    onClick={() => saveEdits(item._id, "", !item.reminder, true)}
                     className={styles.actionButton}
                   >
                     {item.reminder ? (
@@ -128,6 +155,12 @@ const ScheduleSection = () => {
             )}
           </li>
         ))}
+        {schedule.length === 0 && (
+          <>
+            <span className={styles.time}></span>
+            <span className={styles.activity}>There are no meetings scheduled for today</span>
+          </>
+        )}
       </ul>
 
       {/* Custom Notification */}
