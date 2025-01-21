@@ -14,13 +14,11 @@ const DashboardPage = () => {
 	useEffect(() => {
 		console.log(process.env.REACT_APP_BACKEND_URL);
 		// Fetch data from the protected route
-		fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
-			method: 'POST',
-			credentials: 'include',
+		axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {}, {
+			withCredentials: true,  // Include cookies in the request
 			headers: {
-				'Content-Type': 'application/json'
-			},
-			withCredentials: true, // Include cookies in the request
+				'Content-Type': 'application/json'  // Set content-type to JSON
+			}
 		})
 			.then((response) => {
 				if (!response.ok) {
