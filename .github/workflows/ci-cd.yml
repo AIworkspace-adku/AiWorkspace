@@ -74,11 +74,11 @@ jobs:
   
     - name: Push frontend Docker image
       run: |
-        docker push krithikpatil/aiworkspace-frontend-repo
+        docker push krithikpatil/aiworkspace-frontend-repo:v1
         
     - name: Push backend Docker image
       run: |    
-        docker push krithikpatil/aiworkspace-backend-repo
+        docker push krithikpatil/aiworkspace-backend-repo:v1
   
     - name: Deploy to OnRender (Backend)
       run: |
