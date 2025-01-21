@@ -81,13 +81,18 @@ jobs:
       run: |
         docker tag krithikpatil/aiworkspace-backend-repo:latest krithikpatil/aiworkspace-backend-repo:v1
         docker push krithikpatil/aiworkspace-backend-repo:v1
-  
+    
+    - name: Test Render API Access
+      run: |
+        curl -v https://api.onrender.com/v1/services \
+          -H "Authorization: Bearer ${{ secrets.ONRENDER_API_KEY }}"
+    
     - name: Deploy to OnRender (Backend)
       run: |
-        curl -X POST https://api.onrender.com/v1/services/${{secrets.BACKEND_SERVICE_ID}}/deploy \
+        curl -v -X POST https://api.onrender.com/v1/services/${{secrets.BACKEND_SERVICE_ID}}/deploy \
           -H "Authorization: Bearer ${{ secrets.ONRENDER_API_KEY }}"
   
     - name: Deploy to OnRender (Frontend)
       run: |
-        curl -X POST https://api.onrender.com/v1/services/${{secrets.FRONTEND_SERVICE_ID }}/deploy \
+        curl -v -X POST https://api.onrender.com/v1/services/${{secrets.FRONTEND_SERVICE_ID }}/deploy \
           -H "Authorization: Bearer ${{ secrets.ONRENDER_API_KEY }}"
