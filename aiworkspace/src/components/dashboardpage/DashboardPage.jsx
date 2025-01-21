@@ -12,10 +12,14 @@ const DashboardPage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		console.log(process.env.REACT_APP_BACKEND_URL);
 		// Fetch data from the protected route
 		fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
 			method: 'POST',
 			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
 			withCredentials: true, // Include cookies in the request
 		})
 			.then((response) => {

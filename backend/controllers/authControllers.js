@@ -90,7 +90,7 @@ const authenticate = (req, res, next) => {
 const logout = (req, res) => {
 	res.clearCookie('session_token', {
 		httpOnly: true,
-		secure: false, // Use `true` in production
+		secure: true, // Use `true` in production
 		sameSite: 'strict',
 	});
 	res.json({ message: 'Logout successful' });
