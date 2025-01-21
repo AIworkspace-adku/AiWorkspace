@@ -74,13 +74,13 @@ jobs:
   
     - name: Push frontend Docker image
       run: |
-        docker tag krithikpatil/aiworkspace-frontend-repo:v1 krithikpatil/aiworkspace-frontend-repo:v2
-        docker push krithikpatil/aiworkspace-frontend-repo:v2
+        docker tag krithikpatil/aiworkspace-frontend-repo:latest krithikpatil/aiworkspace-frontend-repo:v1
+        docker push krithikpatil/aiworkspace-frontend-repo:v1
         
     - name: Push backend Docker image
       run: |
-        docker tag krithikpatil/aiworkspace-backend-repo:v1 krithikpatil/aiworkspace-backend-repo:v2
-        docker push krithikpatil/aiworkspace-backend-repo:v2
+        docker tag krithikpatil/aiworkspace-backend-repo:latest krithikpatil/aiworkspace-backend-repo:v1
+        docker push krithikpatil/aiworkspace-backend-repo:v1
     
     - name: Test Render API Access
       run: |
