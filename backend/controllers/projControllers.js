@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Modules = require('../models/Modules');
 const Projects = require('../models/Projects');
 const Document = require('../models/Document');
+const Schedule = require('../models/Schedule');
 
 const createProject = async (req, res) => {
 	const { projName, teamId, owner, ownerName, members } = req.body;
@@ -46,6 +47,7 @@ const deleteProject = async (req, res) => {
 
 		await Modules.deleteMany({ projId: projectId });
 		await Document.deleteMany({ 'owner.projId': projectId });
+		await Schedule.deleteMany({ projId: projectId });
 
 		res.status(200).json({ message: 'Project deleted successfully' });
 	} catch (error) {

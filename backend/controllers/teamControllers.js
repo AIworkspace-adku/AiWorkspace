@@ -3,6 +3,7 @@ const Team = require('../models/Teams');
 const Modules = require('../models/Modules');
 const Projects = require('../models/Projects');
 const Document = require('../models/Document');
+const Schedule = require('../models/Schedule');
 
 const createTeam = async (req, res) => {
     const { teamName, owner, ownerName } = req.body;
@@ -33,6 +34,7 @@ const deleteTeam = async (req, res) => {
 		if (!team) return res.status(404).json({ message: 'Team not found' });
 
 		await Modules.deleteMany({ teamId: teamId });
+		await Schedule.deleteMany({ teamId: teamId });
 
 		const deletedProjects = await Projects.find({ 'owner.teamId': teamId }); // Projects to be deleted
 		const deleteResult = await Projects.deleteMany({ 'owner.teamId': teamId });
