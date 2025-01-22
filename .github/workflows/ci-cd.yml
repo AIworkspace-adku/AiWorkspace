@@ -40,10 +40,8 @@ jobs:
     
     - name: Create environment files
       run: |
-        echo "${{ secrets.BACKEND_ENV_VARS }}" > backend/.env.json
-        echo "${{ secrets.FRONTEND_ENV_VARS }}" > aiworkspace/.env.json
-        jq -r 'to_entries | .[] | "\(.key)=\(.value)"' backend/.env.json > backend/.env
-        jq -r 'to_entries | .[] | "\(.key)=\(.value)"' aiworkspace/.env.json > aiworkspace/.env
+        echo "${{ secrets.BACKEND_ENV_VARS }}" > backend/.env
+        echo "${{ secrets.FRONTEND_ENV_VARS }}" > aiworkspace/.env
 
     - name: Set up Node.js (Backend)
       uses: actions/setup-node@v2
