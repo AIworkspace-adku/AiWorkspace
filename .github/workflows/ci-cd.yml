@@ -35,8 +35,12 @@ jobs:
     
     - name: Create environment files
       run: |
-        echo "${{ secrets.BACKEND_ENV_VARS }}" > backend/.env
-        echo "${{ secrets.FRONTEND_ENV_VARS }}" > aiworkspace/.env
+        echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" > backend/.env
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" > backend/.env
+        echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > backend/.env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > backend/.env
+        echo "PORT=${{ secrets.PORT }}" > backend/.env
+        echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }}" > aiworkspace/.env
 
     - name: Set up Node.js (Backend)
       uses: actions/setup-node@v2
@@ -69,13 +73,11 @@ jobs:
   
     - name: Push frontend Docker image
       run: |
-        docker tag krithikpatil/aiworkspace-frontend-repo:latest krithikpatil/aiworkspace-frontend-repo:v1
-        docker push krithikpatil/aiworkspace-frontend-repo:v1
+        docker push krithikpatil/aiworkspace-frontend-repo
         
     - name: Push backend Docker image
       run: |
-        docker tag krithikpatil/aiworkspace-backend-repo:latest krithikpatil/aiworkspace-backend-repo:v1
-        docker push krithikpatil/aiworkspace-backend-repo:v1
+        docker push krithikpatil/aiworkspace-backend-repo
     
     - name: Test Render API Access
       run: |
@@ -91,8 +93,7 @@ jobs:
             --header 'content-type: application/json' \
             --data '
         {
-          "clearCache": "do_not_clear",
-          "dockerTag": "v1"
+          "clearCache": "do_not_clear"
         }
         '
   
@@ -105,7 +106,6 @@ jobs:
             --header 'content-type: application/json' \
             --data '
         {
-          "clearCache": "do_not_clear",
-          "dockerTag": "v1"
+          "clearCache": "do_not_clear"
         }
         '
