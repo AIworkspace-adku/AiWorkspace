@@ -1,4 +1,4 @@
-import { PaperAirplaneIcon } from "@heroicons/react/solid";
+import PaperAirplaneIcon from "@heroicons/react/solid/PaperAirplaneIcon.js";
 import { useMeeting, usePubSub } from "@videosdk.live/react-sdk";
 import React, { useEffect, useRef, useState } from "react";
 import { formatAMPM, json_verify, nameTructed } from "../../utils/helper.js";

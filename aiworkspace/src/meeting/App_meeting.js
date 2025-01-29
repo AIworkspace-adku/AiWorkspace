@@ -6,7 +6,7 @@ import { MeetingContainer } from "./meeting/MeetingContainer.js";
 import { LeaveScreen } from "./components/screens/LeaveScreen.js";
 import { JoiningScreen } from "./components/screens/JoiningScreen.js"
 
-function App() {
+function App_meeting() {
   const [token, setToken] = useState("");
   const [meetingId, setMeetingId] = useState("");
   const [participantName, setParticipantName] = useState("");
@@ -90,4 +90,4 @@ function App() {
   );
 }
 
-export default App;
+export default App_meeting;

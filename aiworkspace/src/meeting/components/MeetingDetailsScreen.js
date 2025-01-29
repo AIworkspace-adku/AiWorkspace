@@ -1,4 +1,5 @@
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/outline";
+import CheckIcon from "@heroicons/react/outline/CheckIcon.js";
+import ClipboardIcon from "@heroicons/react/outline/ChevronDownIcon.js";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 

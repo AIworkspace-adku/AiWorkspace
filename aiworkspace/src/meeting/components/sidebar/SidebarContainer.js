@@ -2,7 +2,7 @@ import { useMeeting } from "@videosdk.live/react-sdk";
 import React, { Fragment } from "react";
 import useIsMobile from "../../hooks/useIsMobile.js";
 import useIsTab from "../../hooks/useIsTab.js";
-import { XIcon } from "@heroicons/react/24/outline";
+import XIcon from "@heroicons/react/outline/XIcon.js";
 import { ChatPanel } from "./ChatPanel.js";
 import { ParticipantPanel } from "./ParticipantPanel.js";
 import { Dialog, Transition } from "@headlessui/react";

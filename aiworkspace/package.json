@@ -18,6 +18,7 @@
     "@react-three/drei": "^9.120.5",
     "@react-three/fiber": "^8.17.10",
     "@splinetool/react-spline": "^4.0.0",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
@@ -59,6 +60,7 @@
     "@videosdk.live/react-sdk": "^0.1.105",
     "antd": "^5.23.1",
     "anychart-react": "^1.4.1",
+    "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "chart.js": "^4.4.7",
     "dayjs": "^1.11.13",
@@ -89,6 +91,7 @@
     "socket.io-client": "^4.8.1",
     "split.js": "^1.6.5",
     "styled-components": "^6.1.13",
+    "tailwindcss": "^4.0.0",
     "three": "^0.172.0",
     "tldraw": "^3.3.0",
     "web-vitals": "^2.1.4"
@@ -96,6 +99,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:css": "npx postcss src/meeting/meeting.css -o src/meeting/output.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -123,6 +127,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "postcss": "^8.5.1",
+    "postcss-cli": "^11.0.0"
   }
 }

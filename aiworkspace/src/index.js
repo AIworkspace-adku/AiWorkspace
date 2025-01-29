@@ -19,7 +19,7 @@ const SessionTimeout = lazy(() => import('./session/SessionTimeout.jsx'));
 const Scheduler =lazy(() => import('../src/projects/Scheduler.jsx'));
 const MyTask = lazy(() => import('../src/mytask/MyTask.jsx'));
 const Dasboard =lazy(() => import('../src/projects/Dashboard.jsx'));
-const  Meeting=lazy(() => import('../src/meeting/App.js'));
+const Meeting =lazy(() => import('../src/meeting/meeting.js'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

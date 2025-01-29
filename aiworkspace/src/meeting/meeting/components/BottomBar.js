@@ -5,12 +5,11 @@ import {
   useMediaDevice,
 } from "@videosdk.live/react-sdk";
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ClipboardIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@heroicons/react/outline";
+import ClipboardIcon from "@heroicons/react/outline/ClipboardIcon.js";
+import CheckIcon from "@heroicons/react/outline/CheckIcon.js";
+import ChevronDownIcon from "@heroicons/react/outline/ChevronDownIcon.js";
+import DotsHorizontalIcon from "@heroicons/react/outline/DotsHorizontalIcon.js";
+
 import recordingBlink from "../../static/animations/recording-blink.json";
 import useIsRecording from "../../hooks/useIsRecording.js";
 import RecordingIcon from "../../icons/Bottombar/RecordingIcon.js";
