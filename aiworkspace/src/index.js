@@ -19,6 +19,7 @@ const SessionTimeout = lazy(() => import('./session/SessionTimeout.jsx'));
 const Scheduler =lazy(() => import('../src/projects/Scheduler.jsx'));
 const MyTask = lazy(() => import('../src/mytask/MyTask.jsx'));
 const Dasboard =lazy(() => import('../src/projects/Dashboard.jsx'));
+const  Meeting=lazy(() => import('../src/meeting/App.js'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -40,6 +41,7 @@ root.render(
           <Route path="/scheduler" element={<Scheduler />} />
           <Route path="/mytask" element={<MyTask />} />
           <Route path="/proj-dashboard" element={<Dasboard />} />
+          <Route path="/meeting" element={<Meeting />} />
         </Routes>
       </Suspense>
     </Router>
