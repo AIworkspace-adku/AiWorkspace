@@ -58,7 +58,7 @@ const login = async (req, res) => {
 		res.cookie('session_token', token, {
 			httpOnly: true,
 			secure: true, // Use secure cookies in production
-			sameSite: 'strict',
+			sameSite: 'none',
 			maxAge: 60 * 60 * 1000, // 1 hour
 		});
 
@@ -91,7 +91,7 @@ const logout = (req, res) => {
 	res.clearCookie('session_token', {
 		httpOnly: true,
 		secure: true, // Use `true` in production
-		sameSite: 'strict',
+		sameSite: 'none',
 	});
 	res.json({ message: 'Logout successful' });
 };
