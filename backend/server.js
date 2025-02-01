@@ -11,7 +11,7 @@ dotenv.config();
 
 const allowedOrigins = [
 	'http://localhost:3000',
-	process.env.FRONTEND_URL,
+	'https://aiworkspace-frontend-repo.onrender.com',
 ];
 
 const app = express();
@@ -26,12 +26,15 @@ app.use(cors({
 	allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Handle preflight requests
+app.options('*', cors());
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
 	cors: {
 		origin: allowedOrigins, // Replace with your frontend URL if different
-		methods: ["post", "POST"]
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	}
 });
 
