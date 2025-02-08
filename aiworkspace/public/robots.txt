@@ -1,3 +1,134 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
+Joins: 
+1. inner join:
+
+SELECT r.name AS restaurant_name, SUM(o.total_amount) AS total_revenue
+FROM restaurants r
+INNER JOIN orders o
+ON r.restaurant_id = o.restaurant_id
+GROUP BY r.name
+ORDER BY total_revenue DESC;
+
+2. left join:
+SELECT r.name AS restaurant_name, mi.name AS menu_item
+FROM restaurants r
+LEFT JOIN menu_items mi
+ON r.restaurant_id = mi.restaurant_id
+ORDER BY r.name;
+
+3. right join:
+SELECT e.first_name AS employee_name, r.name AS restaurant_name
+FROM employees e
+RIGHT JOIN restaurants r
+ON e.restaurant_id = r.restaurant_id;
+
+4. full outer join:
+SELECT 
+    mi.name AS menu_item, 
+    od.quantity, 
+    od.subtotal
+FROM menu_items mi
+LEFT JOIN order_details od ON mi.item_id = od.item_id
+UNION
+SELECT 
+    mi.name AS menu_item, 
+    od.quantity, 
+    od.subtotal
+FROM menu_items mi
+RIGHT JOIN order_details od ON mi.item_id = od.item_id
+ORDER BY menu_item;
+
+
+5. group by:
+SELECT payment_method, COUNT(order_id) AS total_orders, SUM(total_amount) AS total_revenue
+FROM orders
+GROUP BY payment_method
+ORDER BY total_revenue DESC;
+
+6. having:
+SELECT r.name AS restaurant_name, SUM(o.total_amount) AS total_sales
+FROM restaurants r
+INNER JOIN orders o
+ON r.restaurant_id = o.restaurant_id
+GROUP BY r.name
+HAVING SUM(o.total_amount) > 50000;
+
+7. order by:
+SELECT name AS menu_item, price
+FROM menu_items
+ORDER BY price DESC
+LIMIT 5;
+
+8.Window Functions
+
+ROW_NUMBER:
+SELECT 
+    restaurant_id, 
+    employee_id, 
+    first_name, 
+    performance_rating, 
+    ROW_NUMBER() OVER (PARTITION BY restaurant_id ORDER BY performance_rating DESC) AS row_num
+FROM employees;
+
+SUM:
+SELECT restaurant_id, total_amount, SUM(total_amount) 
+OVER (PARTITION BY restaurant_id) 
+AS total_revenue FROM orders;
+
+AVG:
+SELECT restaurant_id, AVG(rating) 
+OVER (PARTITION BY restaurant_id) 
+AS avg_rating FROM customer_feedback;
+
+
+9. Subqueries:
+
+Subquery in SELECT:
+
+SELECT 
+    name AS restaurant_name, 
+    (SELECT COUNT(*) 
+     FROM employees 
+     WHERE employees.restaurant_id = restaurants.restaurant_id) AS employee_count
+FROM restaurants;
+
+
+Subquery in WHERE:
+
+SELECT 
+employee_id, first_name, last_name FROM employees 
+WHERE restaurant_id IN 
+( SELECT restaurant_id FROM restaurants WHERE cuisine_type = 'Indian' );
+
+Subquery in FROM:
+
+SELECT 
+    restaurant_id, 
+    total_revenue 
+FROM (
+    SELECT 
+        restaurant_id, 
+        SUM(total_amount) AS total_revenue 
+    FROM orders 
+    GROUP BY restaurant_id
+) AS revenue_summary
+WHERE total_revenue > 10000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

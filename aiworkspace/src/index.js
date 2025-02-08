@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals.js';
 // Lazy-loaded components
 const Signin = lazy(() => import('./signup/signin/Signin.jsx'));
 const Register = lazy(() => import('./signup/register/Register.jsx'));
+const Gpt = lazy(() => import('./chatGpt/Gpt.jsx'));
 const Docs = lazy(() => import('./App_docs.js'));
 const White = lazy(() => import('./whiteboard/White.jsx'));
 const DashboardPage = lazy(() => import('./components/dashboardpage/DashboardPage.jsx'));
@@ -19,6 +20,7 @@ const SessionTimeout = lazy(() => import('./session/SessionTimeout.jsx'));
 const Scheduler =lazy(() => import('../src/projects/Scheduler.jsx'));
 const MyTask = lazy(() => import('../src/mytask/MyTask.jsx'));
 const Dasboard =lazy(() => import('../src/projects/Dashboard.jsx'));
+const Meeting =lazy(() => import('../src/meeting/meeting.js'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -40,6 +42,8 @@ root.render(
           <Route path="/scheduler" element={<Scheduler />} />
           <Route path="/mytask" element={<MyTask />} />
           <Route path="/proj-dashboard" element={<Dasboard />} />
+          <Route path="/meeting" element={<Meeting />} />
+          <Route path="/Gpt" element={<Gpt />} />
         </Routes>
       </Suspense>
     </Router>

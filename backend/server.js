@@ -53,6 +53,7 @@ const teamRoutes = require('./routes/teamRoutes/teamRoutes');
 const projRoutes = require('./routes/projRoutes/projRoutes');
 const modTaskRoutes = require('./routes/modTaskRoutes/modTaskRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes/scheduleRoutes');
+const queryRoutes = require('./routes/queryRoutes/queryRoutes');
 
 socketHandlers(io);
 app.use('/', docRoutes);
@@ -61,6 +62,7 @@ app.use('/teams', teamRoutes);
 app.use('/projects', projRoutes);
 app.use('/modTask', modTaskRoutes);
 app.use('/meeting', scheduleRoutes);
+app.use('/Gpt', queryRoutes);
 
 app.post('/', (req, res) => {
 	res.send('Server is running');

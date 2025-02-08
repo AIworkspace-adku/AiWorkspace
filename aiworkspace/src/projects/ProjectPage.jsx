@@ -90,7 +90,7 @@ const ProjectPage = () => {
           <a href="#" className={styles.chatButton}>
             <FaComments /> Chat
           </a>
-          <a href="#" className={styles.videoCallButton}>
+          <a href="/meeting" className={styles.videoCallButton}>
             <FaVideo /> Video Call
           </a>
         </div>
