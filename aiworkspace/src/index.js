@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals.js';
 // Lazy-loaded components
 const Signin = lazy(() => import('./signup/signin/Signin.jsx'));
 const Register = lazy(() => import('./signup/register/Register.jsx'));
+const Gpt = lazy(() => import('./chatGpt/Gpt.jsx'));
 const Docs = lazy(() => import('./App_docs.js'));
 const White = lazy(() => import('./whiteboard/White.jsx'));
 const DashboardPage = lazy(() => import('./components/dashboardpage/DashboardPage.jsx'));
@@ -42,6 +43,7 @@ root.render(
           <Route path="/mytask" element={<MyTask />} />
           <Route path="/proj-dashboard" element={<Dasboard />} />
           <Route path="/meeting" element={<Meeting />} />
+          <Route path="/Gpt" element={<Gpt />} />
         </Routes>
       </Suspense>
     </Router>
