@@ -4,7 +4,8 @@ import { useState } from "react";
 import { MeetingAppProvider } from "./MeetingAppContextDef.js";
 import { MeetingContainer } from "./meeting/MeetingContainer.js";
 import { LeaveScreen } from "./components/screens/LeaveScreen.js";
-import { JoiningScreen } from "./components/screens/JoiningScreen.js"
+import { JoiningScreen } from "./components/screens/JoiningScreen.js";
+
 
 function App_meeting() {
   const [token, setToken] = useState("");
