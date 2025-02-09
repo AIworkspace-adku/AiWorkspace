@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import './EditorComponent.css';
 import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
+import { jsPDF } from 'jspdf';
 
 Quill.register('modules/cursors', QuillCursors);
 const socket = io(`${process.env.REACT_APP_BACKEND_URL}`);
@@ -25,15 +26,16 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
 
     const handleDownload = () => {
         const quill = quillRef.current.getEditor();
-        const content = quill.getContents();
-        const blob = new Blob([JSON.stringify(content)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+        const textContent = quill.getText(); // Get plain text content from Quill
 
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${document_data.id}.json`;
-        link.click();
-        URL.revokeObjectURL(url);
+        // Create a new jsPDF instance
+        const doc = new jsPDF();
+
+        // Add plain text content to the PDF
+        doc.text(textContent, 10, 10); // Adding the text at position (10, 10)
+
+        // Save the generated PDF
+        doc.save(`${document_data.id}.pdf`);
     };
     const quillModules = {
         toolbar: {
@@ -189,7 +191,7 @@ function EditorComponent({ userData, document_data, onUpdateContent }) {
             }
         };
 
-        
+
 
         quill.on('text-change', handleTextChange);
         quill.on('selection-change', handleSelectionChange);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Sidebar.module.css';
 import { FaFolder, FaFolderOpen, FaFileAlt, FaEllipsisH, FaUser, FaTasks, FaPlus, FaSignOutAlt } from 'react-icons/fa';
@@ -8,7 +9,7 @@ const Sidebar = ({ setData, userData }) => {
   const owner = userData.email;
   const userName = userData.username;
   const [yourTeams, setYourTeams] = useState([]);
-
+  const navigate = useNavigate();
   const [memberTeams, setMemberTeams] = useState([]); // Teams user is a member of
   const [expanded, setExpanded] = useState({ yourTeams: true, teams: true });
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -47,6 +48,7 @@ const Sidebar = ({ setData, userData }) => {
       localStorage.removeItem('authToken');
       setData(null);
       alert('Logged out successfully!');
+      navigate('/signin');
     } catch (error) {
       console.error('Error logging out:', error);
       alert('Logout failed. Please try again.');
