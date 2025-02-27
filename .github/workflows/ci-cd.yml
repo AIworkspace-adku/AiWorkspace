@@ -41,6 +41,7 @@ jobs:
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > backend/.env
         echo "PORT=${{ secrets.PORT }}" > backend/.env
         echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }}" > aiworkspace/.env
+        echo "REACT_APP_VIDEOSDK_TOKEN=${{ secrets.REACT_APP_VIDEOSDK_TOKEN }}" > aiworkspace/.env
 
     - name: Set up Node.js (Backend)
       uses: actions/setup-node@v2
