@@ -5,7 +5,7 @@ import MicOffSmallIcon from "../icons/MicOffSmallIcon.js";
 import ScreenShareIcon from "../icons/ScreenShareIcon.js";
 import SpeakerIcon from "../icons/SpeakerIcon.js";
 import { nameTructed } from "../utils/helper.js";
-import { CornerDisplayName } from "./ParticipantView.js";
+import { CornerDisplayName } from "./ParticipantView.jsx";
 
 export function PresenterView({ height }) {
   const mMeeting = useMeeting();

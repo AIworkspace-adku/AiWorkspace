@@ -3,9 +3,9 @@ import { Constants, useMeeting, useParticipant, usePubSub } from "@videosdk.live
 import { BottomBar } from "./components/BottomBar.js";
 import { SidebarConatiner } from "../components/sidebar/SidebarContainer.js";
 import MemorizedParticipantView from "./components/ParticipantView.js";
-import { PresenterView } from "../components/PresenterView.js";
+import { PresenterView } from "../components/PresenterView.jsx";
 import { nameTructed, trimSnackBarText } from "../utils/helper.js";
-import WaitingToJoinScreen from "../components/screens/WaitingToJoinScreen.js";
+import WaitingToJoinScreen from "../components/screens/WaitingToJoinScreen.jsx";
 import ConfirmBox from "../components/ConfirmBox.js";
 import useIsMobile from "../hooks/useIsMobile.js";
 import useIsTab from "../hooks/useIsTab.js";

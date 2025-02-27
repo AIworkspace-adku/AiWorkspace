@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import animationData from "../../../meeting/static/animations/join_meeting.json";
-// aiworkspace\src\meeting\static\animations\join_meeting.json
+import animationData from "../../static/animations/join_meeting.json";
 import Lottie from "lottie-react";
 import useIsTab from "../../hooks/useIsTab.js";
 import useIsMobile from "../../hooks/useIsMobile.js";

@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
 
-
 // Lazy-loaded components
 const Signin = lazy(() => import('./signup/signin/Signin.jsx'));
 const Register = lazy(() => import('./signup/register/Register.jsx'));
@@ -24,6 +23,7 @@ const Meeting =lazy(() => import('../src/meeting/meeting.js'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  
   <React.StrictMode>
     <Router>
       <Suspense fallback={<div>Loading...</div>}>

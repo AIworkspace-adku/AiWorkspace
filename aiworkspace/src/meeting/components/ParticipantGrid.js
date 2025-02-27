@@ -1,6 +1,6 @@
 import React from "react";
 import { useMeetingAppContext } from "../MeetingAppContextDef.js";
-import { ParticipantView } from "./ParticipantView.js";
+import { ParticipantView } from "./ParticipantView.jsx";
 
 const MemoizedParticipant = React.memo(
   ParticipantView,
