@@ -9,7 +9,8 @@ function Gpt() {
         e.preventDefault();
         try {
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/Gpt/predict`, { query });
-            setResults(response.data.results);
+            console.log(response.data.data);
+            setResults(response.data.data);
         } catch (error) {
             console.error(error);
         }
