@@ -17,26 +17,13 @@ function Gpt() {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Enter your query"
-                />
-                <button type="submit">Search</button>
-            </form>
-            <ul>
-                {results.map((result, index) => (
-                    <li key={index}>
-                        <h3>{result.title}</h3>
-                        <p>{result.authors.join(', ')}</p>
-                        <p>{result.abstract}</p>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <iframe
+            src="https://adku-researchgpt-space.hf.space"
+            frameborder="0"
+            width="1200"
+            height="900"
+        ></iframe>
+
     );
 }
 
