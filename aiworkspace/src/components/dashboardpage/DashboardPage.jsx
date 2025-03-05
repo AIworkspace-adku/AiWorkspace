@@ -5,6 +5,7 @@ import styles from './DashboardPage.module.css';
 import Sidebar from './Sidebar.jsx';
 import MainContent from './MainContent.jsx';
 import RightPanel from './RightPanel.jsx';
+import Chatbot from '../../chatbot/Chatbot.jsx';
 
 const DashboardPage = () => {
 	const [data, setData] = useState(null);
@@ -50,6 +51,7 @@ const DashboardPage = () => {
 		<div className={styles.dashboardContainer}>
 			<Sidebar setData={setData} userData={data} />
 			<MainContent userData={data} />
+			<Chatbot userData={data}/>
 		</div>
 	);
 };
