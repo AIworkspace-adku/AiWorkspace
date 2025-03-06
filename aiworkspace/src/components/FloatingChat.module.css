@@ -1,0 +1,201 @@
+/* frontend/src/components/FloatingChat.module.css */
+.chatContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 360px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #2a2a3a 100%); /* Dark gradient base */
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    font-family: 'DM Sans', Arial, sans-serif;
+    transition: all 0.4s ease;
+    z-index: 1000;
+    overflow: hidden;
+  }
+  
+  .minimized {
+    height: 60px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); /* Button gradient */
+    color: #ffffff;
+    border-radius: 15px 15px 0 0;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0) 80%);
+    filter: blur(40px);
+    opacity: 0.5;
+    z-index: -1;
+    animation: lampMove 4s infinite alternate ease-in-out;
+  }
+  
+  @keyframes lampMove {
+    0% { transform: translateX(-50%) translateY(0); }
+    100% { transform: translateX(-50%) translateY(10px); }
+  }
+  
+  .header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .headerButtons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .minimizeButton,
+  .closeButton {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+  
+  .minimizeButton:hover,
+  .closeButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+  
+  .messages {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 15px;
+    background: #1e1e2f; /* Darker chat area */
+    color: #ffffff;
+  }
+  
+  .message {
+    margin-bottom: 12px;
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    position: relative;
+    animation: slideIn 0.3s ease;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .sent {
+    margin-left: auto;
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%); /* Sent message gradient */
+    color: #ffffff;
+    text-align: right;
+  }
+  
+  .received {
+    margin-right: auto;
+    background: #2a2a3a; /* Received message dark */
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  .sender {
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 4px;
+    display: block;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  .content {
+    word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .timestamp {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+    display: block;
+  }
+  
+  .chatForm {
+    display: flex;
+    padding: 12px;
+    background: #1a1a1a;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 15px 15px;
+  }
+  
+  .input {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    margin-right: 10px;
+    background: #2a2a3a;
+    color: #ffffff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .input:focus {
+    background: #35354a;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 5px rgba(37, 117, 252, 0.5);
+  }
+  
+  .sendButton {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .sendButton:hover {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(106, 17, 203, 0.4);
+  }
+  
+  .messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+  
+  .messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
