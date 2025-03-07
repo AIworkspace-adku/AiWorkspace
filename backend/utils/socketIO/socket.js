@@ -43,7 +43,22 @@ const socketHandlers = (io) => {
                 name,
             });
         });
-
+        // Team chat
+        socket.on('joinGroup', (teamId) => {
+            socket.join(teamId);
+            console.log(`Client joined team chat: ${teamId}`);
+          });
+      
+          socket.on('sendMessage', (data) => {
+            const { teamId, content, sender, _id, timestamp } = data;
+            io.to(teamId).emit('message', {
+              group: teamId,
+              sender,
+              content,
+              _id,
+              timestamp,
+            });
+          });
         socket.on('disconnect', () => {
             console.log('Client disconnected');
             for (const documentId in usersByDocument) {

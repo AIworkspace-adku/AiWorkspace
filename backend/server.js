@@ -31,7 +31,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
 		origin: allowedOrigins, // Replace with your frontend URL if different
-		methods: ["post", "POST"]
+		methods: ["post", "POST"],
+		credentials: true,
 	}
 });
 
@@ -53,6 +54,7 @@ const scheduleRoutes = require('./routes/scheduleRoutes/scheduleRoutes');
 const queryRoutes = require('./routes/queryRoutes/queryRoutes');
 const profileRoutes = require('./routes/profileRoutes/profileRoutes');
 
+const groupRoutes = require('./routes/groupRoutes/groupRoutes');
 socketHandlers(io);
 app.use('/', docRoutes);
 app.use('/api/auth', authRoutes);
@@ -62,6 +64,7 @@ app.use('/modTask', modTaskRoutes);
 app.use('/meeting', scheduleRoutes);
 app.use('/Gpt', queryRoutes);
 app.use('/profile', profileRoutes);
+app.use('/api/group', groupRoutes);
 
 app.post('/', (req, res) => {
 	res.send('Server is running');
