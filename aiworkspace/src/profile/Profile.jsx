@@ -1,16 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 
 const Profile = () => {
-  const [username, setUsername] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [teams, setTeams] = useState(['Team Alpha', 'Team Beta']); // Dummy data
   const [tasks, setTasks] = useState([]); // Dummy tasks for calendar
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSaveChanges = () => {
-    alert('Changes saved!'); // Placeholder for actual functionality
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
+      method: 'POST',
+      credentials: 'include',
+      withCredentials: true, // Include cookies in the request
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            navigate('/session-timeout');
+          }
+          else {
+            throw new Error('Failed to fetch data');
+          }
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setEmail(data.email);
+        setUsername(data.username);
+        setData(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error.message)
+      });
+  }
+
+  if (!data) {
+    return <div>Loading...</div>; // Show loading message if data is still being fetched
+  }
+
+  const handleSaveChanges = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/profile/update`, {
+        username,
+        oldEmail: data.email,
+        email,
+        password
+      })
+      .then (response => {
+        console.log(response.data);
+        fetchUserData();
+        alert('Changes saved!');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+    catch (error) {
+      console.log(error);
+      alert("Error while updating profile");
+    }
   };
 
   const handleAddTask = (date, task) => {
@@ -37,6 +98,7 @@ const Profile = () => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled
           />
         </div>
         <div className="input-group">
@@ -45,6 +107,7 @@ const Profile = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled
           />
         </div>
         <div className="input-group">

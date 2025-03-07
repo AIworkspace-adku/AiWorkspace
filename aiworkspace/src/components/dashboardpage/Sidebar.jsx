@@ -203,22 +203,24 @@ const Sidebar = ({ setData, userData }) => {
       {/* Tasks */}
       <div className={styles.nodeContainer}>
         <div className={styles.nodeHeader}>
-        <a href="/mytask" className={styles.nodeLink}> {/* Use <a> for redirection */}
-          <div className={styles.nodeInfo}>
-            <FaTasks />
-            <span className={styles.nodeName}>Tasks</span>
-          </div>
-        </a>
+          <a href="/mytask" className={styles.nodeLink}> {/* Use <a> for redirection */}
+            <div className={styles.nodeInfo}>
+              <FaTasks />
+              <span className={styles.nodeName}>Tasks</span>
+            </div>
+          </a>
         </div>
       </div>
 
       {/* Profile */}
       <div className={styles.nodeContainer}>
         <div className={styles.nodeHeader}>
-          <div className={styles.nodeInfo}>
-            <FaUser />
-            <span className={styles.nodeName}>Profile</span>
-          </div>
+          <a href="/profile" className={styles.nodeLink}>
+            <div className={styles.nodeInfo}>
+              <FaUser />
+              <span className={styles.nodeName}>Profile</span>
+            </div>
+          </a>
         </div>
       </div>
 

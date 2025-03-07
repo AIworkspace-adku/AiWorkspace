@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import App from './App.js';
 import reportWebVitals from './reportWebVitals.js';
+
 // Lazy-loaded components
 const Signin = lazy(() => import('./signup/signin/Signin.jsx'));
 const Register = lazy(() => import('./signup/register/Register.jsx'));
@@ -43,7 +44,6 @@ root.render(
           <Route path="/proj-dashboard" element={<Dasboard />} />
           <Route path="/meeting" element={<Meeting />} />
           <Route path="/Gpt" element={<Gpt />} />
-          
         </Routes>
       </Suspense>
     </Router>
