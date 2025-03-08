@@ -1,5 +1,6 @@
 // frontend/src/components/FloatingChat.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import socket from '../socket';
 import styles from './FloatingChat.module.css';
@@ -9,6 +10,8 @@ const FloatingChat = ({ teamId, onClose }) => {
   const [content, setContent] = useState('');
   const [isMinimized, setIsMinimized] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const messagesEndRef = useRef(null);
 
   // Simple color generator for usernames
@@ -28,13 +31,34 @@ const FloatingChat = ({ teamId, onClose }) => {
         const msgRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/group/messages/${teamId}`, {
           withCredentials: true,
         });
+        console.log(msgRes.data);
         setMessages(msgRes.data);
 
         // Fetch current user data
-        const userRes = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/user`, {
-          withCredentials: true,
-        });
-        setCurrentUser(userRes.data); // Assuming { email, username, ... }
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/protected`, {
+          method: 'POST',
+          credentials: 'include',
+          withCredentials: true, // Include cookies in the request
+        })
+          .then((response) => {
+            if (!response.ok) {
+              if (response.status === 401) {
+                navigate('/session-timeout');
+              }
+              else {
+                throw new Error('Failed to fetch data');
+              }
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            setCurrentUser(data);
+          })
+          .catch((error) => {
+            console.log(error);
+            setError(error.message)
+          });
       } catch (err) {
         console.error('Error fetching data:', err.message);
       }
