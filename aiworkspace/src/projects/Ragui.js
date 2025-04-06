@@ -69,7 +69,6 @@ function Ragui() {
         <div className="header">
           <div className="model-selector">
             <span>RAG Model</span>
-            <span className="dropdown-arrow">▼</span>
           </div>
         </div>
 
@@ -77,7 +76,7 @@ function Ragui() {
         <div className="messages-container">
           {messages.length === 0 ? (
             <div className="welcome-screen">
-              <h1>What can I help with?</h1>
+              <h2>What can I help with?</h2>
             </div>
           ) : (
             <div className="message-list">
